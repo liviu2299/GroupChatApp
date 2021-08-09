@@ -70,9 +70,6 @@ export default function Drag(props) {
     return (
         <div>
             <div style={styles} onMouseDown={handleMouseDown}>
-                <p>ME</p>
-                <p>{socket.id}</p>
-                <p>x:{state.translation.x} y:{state.translation.y}</p>
                 {props.children}
             </div>
         </div>

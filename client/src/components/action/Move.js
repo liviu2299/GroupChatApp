@@ -24,8 +24,6 @@ export default function Move(props) {
     return (
         <div>
             <div style={styles}> 
-                <p>{props.id}</p>
-                <p>x:{position.x} y:{position.y}</p>
                 {props.children}
             </div>
         </div>

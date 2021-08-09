@@ -6,8 +6,8 @@ const socket = io.connect("/");
 const SocketContext = React.createContext();
 
 const videoConstraints = {
-    height: window.innerHeight / 6,
-    width: window.innerWidth / 6
+    height: { exact: 75 },
+    width: { exact: 100 }
 };
 
 const ContextProvider = ({ children }) => {

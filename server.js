@@ -18,8 +18,6 @@ io.on('connection', socket => {
 
     socket.on('join room', roomID => {
 
-        
-
         console.log(`User connected: ${socket.id} to room: ${roomID}`);
 
         // If room exists update
@@ -55,9 +53,6 @@ io.on('connection', socket => {
             //console.log(initialPosition);
         });
 
-
-
-
         // Sending Video 
         socket.on("sending signal", payload => {
             io.to(payload.userToSignal).emit('user-joined', { signal: payload.signal, callerID: payload.callerID });
@@ -67,9 +62,6 @@ io.on('connection', socket => {
         socket.on("returning signal", payload => {
             io.to(payload.callerID).emit('receiving returned signal', { signal: payload.signal, id: socket.id });
         });
-
-
-
 
         socket.on('disconnect', () => {
 
