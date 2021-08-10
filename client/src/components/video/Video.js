@@ -21,9 +21,13 @@ export default function Video(props) {
     }, []);
 
     return (
-        <Border>
-            <video playsInline autoPlay ref={ref} />
-        </Border>
+        <div>
+            <Border>
+                <video playsInline autoPlay ref={ref} />
+            </Border>
+            {props.name}
+        </div>
+        
         
     );
 }

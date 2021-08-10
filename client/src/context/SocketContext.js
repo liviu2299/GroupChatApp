@@ -1,6 +1,8 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState, useEffect, useRef, useContext} from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
+
+import { UserContext } from './UserContext'
 
 const socket = io.connect("/");
 const SocketContext = React.createContext();
@@ -13,7 +15,8 @@ const videoConstraints = {
 const ContextProvider = ({ children }) => {
 
     const [users, setUsers] = useState([]);
-    const [connected, setConnected] = useState(false);
+
+    const { me } = useContext(UserContext)
 
     const usersRef = useRef([]);
     const userVideo = useRef();
@@ -25,34 +28,34 @@ const ContextProvider = ({ children }) => {
   
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
             userVideo.current.srcObject = stream;
-        
-            socket.emit('join room', roomID);
+            
+            // Joining room depending if the name is entered
+            console.log('ME: ' + me);
+            if(me !== '') socket.emit('join room', roomID, me);
 
             // Getting users already in the room (1)
             socket.on("all users", (usersInThisRoom, initialPosition) => {
 
-                console.log('/////////////');
-                console.log(usersInThisRoom);
-                console.log(initialPosition);
+                usersInThisRoom.forEach(user => {
 
-                usersInThisRoom.forEach(id => {
-
-                    const peer = createPeer(id, socket.id, stream);
+                    const peer = createPeer(user.id, socket.id, stream, me);
 
                     usersRef.current.push({
-                        id: id,
+                        id: user.id,
+                        name: user.name,
                         position: {
-                            x: initialPosition[id].x,
-                            y: initialPosition[id].y
+                            x: initialPosition[user.id].x,
+                            y: initialPosition[user.id].y
                         },
                         peer
                     });
                     setUsers((prevUsers) => {
                         return prevUsers.concat({
-                            id: id,
+                            id: user.id,
+                            name: user.name,
                             position: {
-                                x: initialPosition[id].x,
-                                y: initialPosition[id].y
+                                x: initialPosition[user.id].x,
+                                y: initialPosition[user.id].y
                             },
                             peer
                         })
@@ -60,14 +63,16 @@ const ContextProvider = ({ children }) => {
                 });
                 console.log('Am primit useri: ' + usersInThisRoom);
             })
-        
+            
             // Getting new user (2)
             socket.on("user-joined", payload => {
                 
                 const peer = addPeer(payload.signal, payload.callerID, stream);
 
+                console.log(payload);
                 usersRef.current.push({
                     id: payload.callerID,
+                    name: payload.name,
                     position: {
                         x: 0,
                         y: 0
@@ -77,6 +82,7 @@ const ContextProvider = ({ children }) => {
                 setUsers((prevUsers) => {
                     return prevUsers.concat({
                         id: payload.callerID,
+                        name: payload.name,
                         position: {
                             x: 0,
                             y: 0
@@ -142,16 +148,17 @@ const ContextProvider = ({ children }) => {
         
     }, [])
 
-    function createPeer(userToSignal, callerID, stream) {
+    function createPeer(userToSignal, callerID, stream, me) {
         const peer = new Peer({
             initiator: true,
             trickle: false,
             stream
         });
- 
+        
+        console.log('aici: ' +  me);
         // Fires right away (initiator)
         peer.on('signal', signal => {
-            socket.emit('sending signal', { userToSignal, callerID, signal })
+            socket.emit('sending signal', { userToSignal, callerID, signal, me })
         });
  
         return peer;
@@ -172,21 +179,13 @@ const ContextProvider = ({ children }) => {
  
          return peer;
     }
-    
-
-    useEffect( () => {
-        usersRef.current.forEach(i => {
-            console.log('usersRef: ' + i.id + ' ' + i.position.x + ' ' + i.position.y)
-        })
-        
-    })
 
     return (
         <SocketContext.Provider value={{
             users,
             setUsers,
             socket,
-            userVideo,
+            userVideo
         }}>
             {children}
         </SocketContext.Provider>

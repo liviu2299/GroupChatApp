@@ -1,15 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { v1 as uuid } from "uuid";
 
-export default function RoomWrapper(props) {
-    function create() {
+import Form from '../components/form/Form';
+import { UserContext } from '../context/UserContext';
+
+export default function CreateRoom(props) {
+
+    const {me, setMe} = useContext(UserContext);
+
+    function handleSubmit() {
         const id = uuid();
         props.history.push(`/room/${id}`);
     }
 
     return (
         <div>
-            <button onClick={create}>Create room</button>
+            <Form name={me} setName={setMe} handleSubmit={handleSubmit}/>
         </div>
     )
 }

@@ -1,5 +1,7 @@
-import React, {useRef} from 'react'
+import React, {useRef, useContext} from 'react'
 import styled from 'styled-components'
+
+import { UserContext } from '../../context/UserContext';
 
 const Border = styled.div`
     border-radius: 20px;
@@ -12,9 +14,14 @@ const Border = styled.div`
 
 export default function MyVideo(props) {
 
+    const { me } = useContext(UserContext)
+
     return (
-        <Border>
-            <video muted ref={props.data} autoPlay playsInline/>
-        </Border>
+        <div>
+            <Border>
+                <video muted ref={props.data} autoPlay playsInline/>
+            </Border>
+            {me}
+        </div>
     )
 }

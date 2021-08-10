@@ -9,23 +9,31 @@ const io = socket(server, {
     pingInterval: 5000
 });
 
-const users = {};           // Returns the users from a room
+const users = [{}];           // Returns the users from a room
 const socketToRoom = {};    // Returns the room of a user
 
 const initialPosition = {};     // Returns the initial position of a user
 
 io.on('connection', socket => {
 
-    socket.on('join room', roomID => {
+    socket.on('join room', (roomID, me) => {
 
-        console.log(`User connected: ${socket.id} to room: ${roomID}`);
+        console.log(`User connected: ${socket.id}:${me} to room: ${roomID}`);
 
         // If room exists update
         if(users[roomID]){
-            users[roomID].push(socket.id);
-            
+            users[roomID].push({
+                id: socket.id,
+                name: me
+            });
         } // If not create
-        else users[roomID] = [socket.id];
+        else {
+            users[roomID] = [{
+                id: socket.id,
+                name: me
+            }];
+        }
+
         socketToRoom[socket.id] = roomID;
 
         initialPosition[socket.id] = {
@@ -34,15 +42,16 @@ io.on('connection', socket => {
         }
 
         console.log(initialPosition);
+
         // Sends all users already in the room
-        const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
+        const usersInThisRoom = users[roomID].filter(user => user.id !== socket.id);
         socket.emit("all users", usersInThisRoom, initialPosition);
     
         // Redirecting positions from clients in the room
         socket.on('internal position incoming', (payload) => {
-            const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
-            usersInThisRoom.forEach(id => {
-                io.to(id).emit('external position incoming', (payload));
+            const usersInThisRoom = users[roomID].filter(user => user.id !== socket.id);
+            usersInThisRoom.forEach(user => {
+                io.to(user.id).emit('external position incoming', (payload));
             });
 
             initialPosition[payload.id] = {
@@ -50,12 +59,11 @@ io.on('connection', socket => {
                 y: payload.position.y
             }
 
-            //console.log(initialPosition);
         });
 
         // Sending Video 
         socket.on("sending signal", payload => {
-            io.to(payload.userToSignal).emit('user-joined', { signal: payload.signal, callerID: payload.callerID });
+            io.to(payload.userToSignal).emit('user-joined', { signal: payload.signal, callerID: payload.callerID, name: payload.name});
         });
 
         // Returning Video
@@ -69,24 +77,21 @@ io.on('connection', socket => {
             const roomID = socketToRoom[socket.id];
             let room = users[roomID];
             if (room) {
-                room = room.filter(id => id !== socket.id);
+                room = room.filter(user => user.id !== socket.id);
                 users[roomID] = room;
             }
 
-            // Erase initial position
-            //delete initialPosition[socket.id];
+            // Erase initial position ....
     
             // Send that someone disconnected
-            const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
-            usersInThisRoom.forEach(id => {
-                io.to(id).emit('user-left', socket.id);
+            const usersInThisRoom = users[roomID].filter(user => user.id !== socket.id);
+            usersInThisRoom.forEach(user => {
+                io.to(user.id).emit('user-left', socket.id);
             });
     
             console.log(`User disconnected: ${socket.id}`);
-            //console.log(initialPosition);
         })
 
-        //console.log(initialPosition);
     })
 
 });
