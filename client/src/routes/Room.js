@@ -1,6 +1,6 @@
-import React, {useEffect, useContext, useRef, useState} from 'react'
+import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/core'
+import { AppBar, Toolbar, Button, IconButton } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useHistory } from 'react-router-dom'
 
@@ -9,6 +9,7 @@ import Drag from '../components/action/Drag'
 import Video from '../components/video/Video'
 import MyVideo from '../components/video/MyVideo';
 import RoomForm from '../components/form/RoomForm';
+import Backdrop from '../components/form/Backdrop';
 
 import {SocketContext} from '../context/SocketContext'
 import { UserContext } from '../context/UserContext';
@@ -25,7 +26,7 @@ export default function Room(props) {
     const history = useHistory();
 
     const { users, userVideo, socket } = useContext(SocketContext);
-    const { me, setMe } = useContext(UserContext)
+    const { commit } = useContext(UserContext)
 
     const url = window.location.href;
     const roomID = url.substring(url.lastIndexOf('/')+1);
@@ -35,12 +36,9 @@ export default function Room(props) {
         socket.disconnect();
     }
 
-    useEffect(() => {
-        console.log(users);
-    }, [users])
-
     return (
         <div>
+            {commit &&
             <AppBar>
                 <Toolbar className={classes.Toolbar}>
                     <IconButton edge="start" onClick={backHandler}>
@@ -49,19 +47,21 @@ export default function Room(props) {
                     <Button color="inherit">User</Button>
                 </Toolbar>
             </AppBar>
+            }
             <Drag>
                 <MyVideo data={userVideo}/>
             </Drag>
             {
             users && users.map((user) => {
                 return(
-                    <Move x={user.position.x} y={user.position.y} id={user.id}>
-                        <Video key={user.id} peer={user.peer} name={user.name}/>
+                    <Move key={user.id} x={user.position.x} y={user.position.y} id={user.id}>
+                        <Video peer={user.peer} name={user.name}/>
                     </Move>   
                 )
             })
             }
-            {me==='' && <RoomForm name={me} setName={setMe} roomID={roomID} socket={socket}/>}
+            {!commit && <RoomForm roomID={roomID} socket={socket}/>}
+            {!commit && <Backdrop/>}
                 
         </div>
     )

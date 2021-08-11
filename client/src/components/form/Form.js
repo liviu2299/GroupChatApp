@@ -1,17 +1,24 @@
-import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core';
+import React, { useContext } from 'react'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
+import './Form.css'
+
+import { UserContext } from '../../context/UserContext';
+
 export default function Form(props) {
+
+    const { me , setMe } = useContext(UserContext);
+
     return (
-        <form onSubmit={props.handleSubmit}>
+        <div className="modal">
+            <form onSubmit={props.handleSubmit}>
             <TextField 
                 label="Name"
                 variant="outlined"
                 required
-                value={props.name}
-                onChange={e => props.setName(e.target.value)}
+                value={me}
+                onChange={e => setMe(e.target.value)}
             />
             <div>
                 <Button type="submit" variant="contained">
@@ -19,5 +26,6 @@ export default function Form(props) {
                 </Button>
             </div>
         </form>
+        </div>
     )
 }

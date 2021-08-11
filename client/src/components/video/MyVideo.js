@@ -1,6 +1,8 @@
 import React, {useRef, useContext} from 'react'
 import styled from 'styled-components'
 
+import './Video.css'
+
 import { UserContext } from '../../context/UserContext';
 
 const Border = styled.div`
@@ -21,7 +23,7 @@ export default function MyVideo(props) {
             <Border>
                 <video muted ref={props.data} autoPlay playsInline/>
             </Border>
-            {me}
+            <p className="name">{me}</p>
         </div>
     )
 }

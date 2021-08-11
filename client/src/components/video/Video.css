@@ -1,0 +1,13 @@
+.name{
+    text-align: center;
+    margin-top: 0;
+}
+
+.border{
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: red;
+    border: 2px solid #E26D54;
+    width: 100px;
+    height: 75px;
+}

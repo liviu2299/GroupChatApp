@@ -1,14 +1,6 @@
 import React, {useEffect, useRef} from 'react'
-import styled from 'styled-components'
 
-const Border = styled.div`
-    border-radius: 20px;
-    overflow: hidden;
-    background-color: red;
-    border: 2px solid #E26D54;
-    width: 100px;
-    height: 75px;
-`;
+import './Video.css'
 
 export default function Video(props) {
 
@@ -21,11 +13,11 @@ export default function Video(props) {
     }, []);
 
     return (
-        <div>
-            <Border>
+        <div className="border">
+            <div>
                 <video playsInline autoPlay ref={ref} />
-            </Border>
-            {props.name}
+            </div>
+            <p className="name">{props.name}</p>
         </div>
         
         

@@ -6,16 +6,18 @@ import { UserContext } from '../context/UserContext';
 
 export default function CreateRoom(props) {
 
-    const {me, setMe} = useContext(UserContext);
+    const { setCommit } = useContext(UserContext);
 
     function handleSubmit() {
+        setCommit(true);
+
         const id = uuid();
         props.history.push(`/room/${id}`);
     }
 
     return (
         <div>
-            <Form name={me} setName={setMe} handleSubmit={handleSubmit}/>
+            <Form handleSubmit={handleSubmit}/>
         </div>
     )
 }

@@ -30,15 +30,16 @@ const ContextProvider = ({ children }) => {
             userVideo.current.srcObject = stream;
             
             // Joining room depending if the name is entered
-            console.log('ME: ' + me);
-            if(me !== '') socket.emit('join room', roomID, me);
-
+            socket.emit('join room', roomID, me);
+                
             // Getting users already in the room (1)
-            socket.on("all users", (usersInThisRoom, initialPosition) => {
+            socket.on("all users", (users, initialPosition) => {
+
+                const usersInThisRoom = users.filter(user => user.id !== socket.id);
 
                 usersInThisRoom.forEach(user => {
 
-                    const peer = createPeer(user.id, socket.id, stream, me);
+                    const peer = createPeer(user.id, socket.id, stream);
 
                     usersRef.current.push({
                         id: user.id,
@@ -72,7 +73,6 @@ const ContextProvider = ({ children }) => {
                 console.log(payload);
                 usersRef.current.push({
                     id: payload.callerID,
-                    name: payload.name,
                     position: {
                         x: 0,
                         y: 0
@@ -82,7 +82,6 @@ const ContextProvider = ({ children }) => {
                 setUsers((prevUsers) => {
                     return prevUsers.concat({
                         id: payload.callerID,
-                        name: payload.name,
                         position: {
                             x: 0,
                             y: 0
@@ -90,7 +89,6 @@ const ContextProvider = ({ children }) => {
                         peer
                     })
                 })
-                console.log('Am primit id: ' + payload.callerID);
             })
 
             socket.on('receiving returned signal', payload => {
@@ -138,27 +136,60 @@ const ContextProvider = ({ children }) => {
                         }
                         return (data);
                     }) 
-                }
-                      
+                }           
 
                 console.log('Userul ' + payload.id + ' s-a updatat la ' + payload.position.x + ' ' + payload.position.y);
+            })
+
+            // Updating name
+            socket.on('update-name', (payload) => {
+
+                let index = usersRef.current.findIndex(x => x.id === payload.id);
+
+                  
+                if(index > -1){
+                    usersRef.current[index] = {
+                        ...usersRef.current[index],
+                        name: payload.name
+                    }
+
+                    setUsers( (prevUsers) => {
+                        const data = prevUsers.slice();
+                        const index = data.findIndex(x => x.id === payload.id);
+                        data[index] = {
+                            ...data[index],
+                            name: payload.name
+                        }
+                        return (data);
+                    }) 
+                }
+                else{
+                    setTimeout(() => {
+                        socket.emit('sending-name', {name: payload.name, id: payload.id})
+                    }, 1000);
+                }
+                
             })
             
         })
         
     }, [])
 
-    function createPeer(userToSignal, callerID, stream, me) {
+    
+    useEffect(() => {
+        console.log(users)
+    }, [users])
+
+    function createPeer(userToSignal, callerID, stream) {
         const peer = new Peer({
             initiator: true,
             trickle: false,
             stream
         });
-        
-        console.log('aici: ' +  me);
+
         // Fires right away (initiator)
         peer.on('signal', signal => {
-            socket.emit('sending signal', { userToSignal, callerID, signal, me })
+            socket.emit('sending signal', { userToSignal, callerID, signal})
         });
  
         return peer;

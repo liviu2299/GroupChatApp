@@ -6,11 +6,11 @@ const app = express();
 const server = http.createServer(app);
 const io = socket(server, {
     pingTimeout: 1000,
-    pingInterval: 5000
+    pingInterval: 1000
 });
 
-const users = [{}];           // Returns the users from a room
-const socketToRoom = {};    // Returns the room of a user
+const users = [{}];             // Returns the users from a room
+const socketToRoom = {};        // Returns the room of a user
 
 const initialPosition = {};     // Returns the initial position of a user
 
@@ -41,11 +41,9 @@ io.on('connection', socket => {
             y: 0
         }
 
-        console.log(initialPosition);
-
         // Sends all users already in the room
         const usersInThisRoom = users[roomID].filter(user => user.id !== socket.id);
-        socket.emit("all users", usersInThisRoom, initialPosition);
+        socket.emit("all users", users[roomID], initialPosition);
     
         // Redirecting positions from clients in the room
         socket.on('internal position incoming', (payload) => {
@@ -61,9 +59,24 @@ io.on('connection', socket => {
 
         });
 
-        // Sending Video 
+        // Updating names
+        socket.on('sending-name', (payload) => {
+            // Updating server database
+            const update = users[roomID].find(user => user.id === payload.id);    
+            update.name = payload.name;
+            
+            console.log('sent');
+
+            // Sending signal to update on client
+            const usersInThisRoom = users[roomID].filter(user => user.id !== socket.id);
+            usersInThisRoom.forEach(user => {
+                io.to(user.id).emit('update-name', {name: payload.name, id: payload.id});
+            });
+        })
+
+        // Sending Video
         socket.on("sending signal", payload => {
-            io.to(payload.userToSignal).emit('user-joined', { signal: payload.signal, callerID: payload.callerID, name: payload.name});
+            io.to(payload.userToSignal).emit('user-joined', { signal: payload.signal, callerID: payload.callerID});
         });
 
         // Returning Video
