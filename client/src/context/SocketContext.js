@@ -15,6 +15,7 @@ const videoConstraints = {
 const ContextProvider = ({ children }) => {
 
     const [users, setUsers] = useState([]);
+    const [messages, setMessages] = useState([]);
 
     const { me } = useContext(UserContext)
 
@@ -70,12 +71,11 @@ const ContextProvider = ({ children }) => {
                 
                 const peer = addPeer(payload.signal, payload.callerID, stream);
 
-                console.log(payload);
                 usersRef.current.push({
                     id: payload.callerID,
                     position: {
-                        x: 0,
-                        y: 0
+                        x: payload.initialPosition[payload.callerID].x,
+                        y: payload.initialPosition[payload.callerID].y
                     },
                     peer
                 });
@@ -83,8 +83,8 @@ const ContextProvider = ({ children }) => {
                     return prevUsers.concat({
                         id: payload.callerID,
                         position: {
-                            x: 0,
-                            y: 0
+                            x: payload.initialPosition[payload.callerID].x,
+                            y: payload.initialPosition[payload.callerID].y
                         },
                         peer
                     })
@@ -170,15 +170,18 @@ const ContextProvider = ({ children }) => {
                 }
                 
             })
+
+            // Getting message
+
+            socket.on('get message', (payload) => {
+                setMessages((prevMessages) => {
+                    return prevMessages.concat({user: payload.user, text: payload.text});
+                });
+            })
             
         })
         
     }, [])
-
-    
-    useEffect(() => {
-        console.log(users)
-    }, [users])
 
     function createPeer(userToSignal, callerID, stream) {
         const peer = new Peer({
@@ -194,21 +197,21 @@ const ContextProvider = ({ children }) => {
  
         return peer;
     }
-     function addPeer(incomingSignal, callerID, stream) {
-         const peer = new Peer({
-             initiator: false,
-             trickle: false,
-             stream
-         });
+    function addPeer(incomingSignal, callerID, stream) {
+        const peer = new Peer({
+            initiator: false,
+            trickle: false,
+            stream
+        });
  
-         // Waiting for the signal
-         peer.on('signal', signal => {
+        // Waiting for the signal
+        peer.on('signal', signal => {
             socket.emit('returning signal', { signal, callerID });
-         })
+        })
  
-         peer.signal(incomingSignal);
+        peer.signal(incomingSignal);
  
-         return peer;
+        return peer;
     }
 
     return (
@@ -216,7 +219,9 @@ const ContextProvider = ({ children }) => {
             users,
             setUsers,
             socket,
-            userVideo
+            userVideo,
+            messages,
+            setMessages,
         }}>
             {children}
         </SocketContext.Provider>

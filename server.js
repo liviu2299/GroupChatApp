@@ -76,7 +76,7 @@ io.on('connection', socket => {
 
         // Sending Video
         socket.on("sending signal", payload => {
-            io.to(payload.userToSignal).emit('user-joined', { signal: payload.signal, callerID: payload.callerID});
+            io.to(payload.userToSignal).emit('user-joined', { signal: payload.signal, callerID: payload.callerID, initialPosition: initialPosition});
         });
 
         // Returning Video
@@ -84,6 +84,15 @@ io.on('connection', socket => {
             io.to(payload.callerID).emit('receiving returned signal', { signal: payload.signal, id: socket.id });
         });
 
+        // Messages
+        socket.on('send message', (payload) => {
+            const usersInThisRoom = users[roomID].filter(user => user.id !== socket.id);
+            usersInThisRoom.forEach(user => {
+                io.to(user.id).emit('get message', payload);
+            });
+        });
+
+        // Disconnect
         socket.on('disconnect', () => {
 
             // Update the users in the room

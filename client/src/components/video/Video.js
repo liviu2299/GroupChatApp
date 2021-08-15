@@ -1,6 +1,19 @@
 import React, {useEffect, useRef} from 'react'
+import styled from 'styled-components'
 
-import './Video.css'
+const Border = styled.div`
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: red;
+    border: 2px solid #D32525;
+    width: 100px;
+    height: 75px;
+`;
+
+const Name = styled.p`
+    text-align: center;
+    margin-top: 0;
+`;
 
 export default function Video(props) {
 
@@ -12,12 +25,16 @@ export default function Video(props) {
         })
     }, []);
 
+    useEffect(() => {
+        console.log(props.name);
+    })
+
     return (
-        <div className="border">
-            <div>
+        <div>
+            <Border>
                 <video playsInline autoPlay ref={ref} />
-            </div>
-            <p className="name">{props.name}</p>
+            </Border>
+            <Name unselectable="on">{props.name}</Name>
         </div>
         
         
