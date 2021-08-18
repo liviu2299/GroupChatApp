@@ -1,18 +1,35 @@
 .messageBox {
     background: #F3F3F3;
     border-radius: 20px;
-    padding: 5px 20px;
+    padding: 3px 15px;
     color: white;
     display: inline-block;
     max-width: 80%;
+  }
+
+  .botMessageBox {
+    background: #F3F3F3;
+    border-radius: 5px;
+    padding: 0 5px;
+    color: white;
+    display: inline-block;
+    max-width: 80%;
+  }
+
+  .botMessageText {
+    width: 100%;
+    font-size: 0.8em;
+    word-wrap: break-word;
+    line-height: 5px;
   }
   
   .messageText {
     width: 100%;
     letter-spacing: 0;
     float: left;
-    font-size: 1.1em;
+    font-size: 0.9em;
     word-wrap: break-word;
+    line-height: 2px;
   }
   
   .messageText img {
@@ -22,16 +39,29 @@
   .messageContainer {
     display: flex;
     justify-content: flex-end;
-    padding: 0 5%;
+    padding: 1px 5%;
     margin-top: 3px;
+    height: 35px;
   }
   
-  .sentText {
+  .sentText1 {
     display: flex;
     align-items: center;
     font-family: Helvetica;
     color: #828282;
     letter-spacing: 0.3px;
+    font-size: 0.8em;
+    padding-right: 5px;
+  }
+
+  .sentText2 {
+    display: flex;
+    align-items: center;
+    font-family: Helvetica;
+    color: #828282;
+    letter-spacing: 0.3px;
+    font-size: 0.8em;
+    padding-left: 5px;
   }
   
   .pl-10 {
@@ -49,6 +79,10 @@
   .justifyEnd {
     justify-content: flex-end;
   }
+
+  .justifyCenter {
+    justify-content: center;
+  }
   
   .colorWhite {
     color: white;
@@ -64,4 +98,8 @@
   
   .backgroundLight {
     background: #F3F3F3;
+  }
+
+  .backgroundGray {
+    background: #9d9d9d;
   }

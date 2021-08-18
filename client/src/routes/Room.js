@@ -11,6 +11,7 @@ import MyVideo from '../components/video/MyVideo';
 import RoomForm from '../components/form/RoomForm';
 import Backdrop from '../components/form/Backdrop';
 import Chat from '../components/chat/Chat';
+import Table from '../components/Table';
 
 import { SocketContext } from '../context/SocketContext'
 import { UserContext } from '../context/UserContext';
@@ -27,19 +28,18 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '10px'
     },
     chat: {
-        height: '90vh',
+        height: '87vh',
         borderRadius: 20,
         position: "relative",
         backgroundColor: theme.palette.success.light
     },
     table: {
-        height: '90vh',
+        height: '87vh',
         borderRadius: 20,
         position: "relative",
         backgroundColor: theme.palette.action.disabledBackground
     },
     grid: {
-        maxWidth: '2000px',
         justifyContent: 'center'
     }
 }));
@@ -76,24 +76,13 @@ export default function Room(props) {
                     </Toolbar>
                 </AppBar>
             </div>
-            <Grid container spacing={3} className={classes.grid}>  
-                <Grid item xs={8}>  
+            <Grid container spacing={2} className={classes.grid}>  
+                <Grid item xs={8} sm={8} md={8} lg={8}>  
                     <Paper className={classes.table}>
-                        Table
-                        <Drag>
-                            <MyVideo data={userVideo}/>
-                        </Drag>
-                        {
-                        users && users.map((user) => {
-                            return(
-                            <Move key={user.id} x={user.position.x} y={user.position.y} id={user.id}>
-                                <Video peer={user.peer} name={user.name}/>
-                            </Move>        
-                            )
-                        })} 
+                        <Table />
                     </Paper>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={4} sm={3} md={3} lg={2}>
                     <Paper className={classes.chat}>
                         <Chat />
                     </Paper>

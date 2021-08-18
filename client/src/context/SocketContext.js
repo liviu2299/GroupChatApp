@@ -32,6 +32,11 @@ const ContextProvider = ({ children }) => {
             
             // Joining room depending if the name is entered
             socket.emit('join room', roomID, me);
+
+            // Welcome to the Room msg
+            setMessages((prevMessages) => {
+                return prevMessages.concat({user: 'bot', text: 'Welcome to the room'});
+            });
                 
             // Getting users already in the room (1)
             socket.on("all users", (users, initialPosition) => {
@@ -79,6 +84,7 @@ const ContextProvider = ({ children }) => {
                     },
                     peer
                 });
+                
                 setUsers((prevUsers) => {
                     return prevUsers.concat({
                         id: payload.callerID,
@@ -89,6 +95,7 @@ const ContextProvider = ({ children }) => {
                         peer
                     })
                 })
+
             })
 
             socket.on('receiving returned signal', payload => {
@@ -99,11 +106,16 @@ const ContextProvider = ({ children }) => {
             // Updating users after disconnect
             socket.on("user-left", id => {
 
+                const user = usersRef.current.find(user => user.id === id);
                 usersRef.current.filter(user => user.id !== id);
                 
                 setUsers((prevUsers) => {
                     return prevUsers.filter(user => user.id !== id);
                 })
+
+                setMessages((prevMessages) => {
+                    return prevMessages.concat({user: 'bot', text: `${user.name} left the room`});
+                });
                 console.log('Deconectat: ' + id);
             })
 
@@ -144,15 +156,15 @@ const ContextProvider = ({ children }) => {
             // Updating name
             socket.on('update-name', (payload) => {
 
-                let index = usersRef.current.findIndex(x => x.id === payload.id);
+                const index = usersRef.current.findIndex(x => x.id === payload.id);
 
-                  
                 if(index > -1){
                     usersRef.current[index] = {
                         ...usersRef.current[index],
                         name: payload.name
                     }
 
+                    
                     setUsers( (prevUsers) => {
                         const data = prevUsers.slice();
                         const index = data.findIndex(x => x.id === payload.id);
@@ -161,7 +173,24 @@ const ContextProvider = ({ children }) => {
                             name: payload.name
                         }
                         return (data);
-                    }) 
+                    })
+
+                    /*
+                    setUsers((prevUsers) => {
+                        return prevUsers.concat({
+                            id: usersRef.current[index].id,
+                            name: payload.name,
+                            position: {
+                                x: usersRef.current[index].position.x,
+                                y: usersRef.current[index].position.y
+                            },
+                            peer: usersRef.current[index].peer
+                        })
+                    })*/
+
+                    setMessages((prevMessages) => {
+                        return prevMessages.concat({user: 'bot', text: `${payload.name} joined the room`});
+                    });
                 }
                 else{
                     setTimeout(() => {
@@ -172,7 +201,6 @@ const ContextProvider = ({ children }) => {
             })
 
             // Getting message
-
             socket.on('get message', (payload) => {
                 setMessages((prevMessages) => {
                     return prevMessages.concat({user: payload.user, text: payload.text});

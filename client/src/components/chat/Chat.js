@@ -38,10 +38,8 @@ export default function Chat() {
 
     return (
         <div>
-            <div>
-                <Messages />
-                <Input message={message} setMessage={setMessage} sendMessage={sendMessage}/>
-            </div>
+            <Messages />
+            <Input message={message} setMessage={setMessage} sendMessage={sendMessage}/>
         </div>
     )
 }

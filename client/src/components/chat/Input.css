@@ -1,16 +1,20 @@
 .form {
     display: flex;
-    border-top: 2px solid #D3D3D3;
+    border-top: 1px solid #000000;
     position: absolute;  
     bottom: 0px;
+    height: 7%;
+    width: 100%;
 }
   
 .input {
     border: none;
     border-radius: 0;
     padding: 5%;
-    width: 80%;
-    font-size: 1.1em;  
+    width: 100%;
+    font-size: 0.8em;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
 }
   
 input:focus, textarea:focus, select:focus{
@@ -25,5 +29,8 @@ input:focus, textarea:focus, select:focus{
     padding: 20px;
     display: inline-block;
     border: none;
-    width: 30%;
+    width: 20%;
+    left: 0px;
+    height: 100%;
+    border-bottom-right-radius: 20px;
 }

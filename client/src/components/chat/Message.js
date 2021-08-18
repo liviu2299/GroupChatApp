@@ -11,22 +11,31 @@ export default function Message({message}) {
     return (
         <div>
             {
-                me === message.user ? (
-                    <div className="messageContainer justifyEnd">
-                        <p className="sentText pr-10">{me}</p>
-                        <div className="messageBox backgroundBlue">
-                            <p className="messageText">{message.text}</p>
+                message.user === 'bot' ?
+                (
+                    <div className="messageContainer justifyCenter">
+                        <div className="botMessageBox backgroundGray">
+                            <p className="botMessageText">{message.text}</p>
                         </div>
-                    </div>
-                )
-                : (
-                    <div className="messageContainer justifyStart">
-                        <div className="messageBox backgroundLight">
-                            <p className="messageText colorDark">{message.text}</p>
+                    </div>   
+                ) :[
+                    me === message.user ? (
+                        <div className="messageContainer justifyEnd">
+                            <p className="sentText1">{me}</p>
+                            <div className="messageBox backgroundBlue">
+                                <p className="messageText">{message.text}</p>
+                            </div>
                         </div>
-                        <p className="sentText"> {message.user}</p>
-                    </div>
-                )
+                    )
+                    : (
+                        <div className="messageContainer justifyStart">
+                            <div className="messageBox backgroundLight">
+                                <p className="messageText colorDark">{message.text}</p>
+                            </div>
+                            <p className="sentText2"> {message.user}</p>
+                        </div>
+                    )
+                ]
             }
         </div>
     )
