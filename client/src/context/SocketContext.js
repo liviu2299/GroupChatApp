@@ -96,6 +96,9 @@ const ContextProvider = ({ children }) => {
                     })
                 })
 
+                console.log('joined');
+                socket.emit('user-buffered', {id: payload.callerID})
+
             })
 
             socket.on('receiving returned signal', payload => {
@@ -153,17 +156,16 @@ const ContextProvider = ({ children }) => {
                 console.log('Userul ' + payload.id + ' s-a updatat la ' + payload.position.x + ' ' + payload.position.y);
             })
 
-            // Updating name
-            socket.on('update-name', (payload) => {
+            // Updating info
+            socket.on('update-info', (payload) => {
 
                 const index = usersRef.current.findIndex(x => x.id === payload.id);
-
                 if(index > -1){
+                    
                     usersRef.current[index] = {
                         ...usersRef.current[index],
                         name: payload.name
                     }
-
                     
                     setUsers( (prevUsers) => {
                         const data = prevUsers.slice();
@@ -175,29 +177,13 @@ const ContextProvider = ({ children }) => {
                         return (data);
                     })
 
-                    /*
-                    setUsers((prevUsers) => {
-                        return prevUsers.concat({
-                            id: usersRef.current[index].id,
-                            name: payload.name,
-                            position: {
-                                x: usersRef.current[index].position.x,
-                                y: usersRef.current[index].position.y
-                            },
-                            peer: usersRef.current[index].peer
-                        })
-                    })*/
-
-                    setMessages((prevMessages) => {
-                        return prevMessages.concat({user: 'bot', text: `${payload.name} joined the room`});
-                    });
-                }
-                else{
-                    setTimeout(() => {
-                        socket.emit('sending-name', {name: payload.name, id: payload.id})
-                    }, 1000);
-                }
-                
+                    if(payload.name)
+                    {
+                        setMessages((prevMessages) => {
+                            return prevMessages.concat({user: 'bot', text: `${payload.name} joined the room`});
+                        });
+                    }
+                } 
             })
 
             // Getting message

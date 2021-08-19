@@ -28,13 +28,13 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '10px'
     },
     chat: {
-        height: '87vh',
+        height: '86vh',
         borderRadius: 20,
         position: "relative",
         backgroundColor: theme.palette.success.light
     },
     table: {
-        height: '87vh',
+        height: '86vh',
         borderRadius: 20,
         position: "relative",
         backgroundColor: theme.palette.action.disabledBackground

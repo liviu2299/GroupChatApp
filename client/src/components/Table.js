@@ -19,7 +19,7 @@ export default function Table(props) {
 
     return (
         <div className="table" ref={divRef}>
-            Table {dimensions.width}, {dimensions.height}
+            Table {dimensions.width}x{dimensions.height}
             <Drag dimensions={dimensions}>
                 <MyVideo data={userVideo}/>
             </Drag>

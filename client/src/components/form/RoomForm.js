@@ -10,10 +10,9 @@ export default function RoomForm(props) {
 
     const { me, setMe, setCommit } = useContext(UserContext);
 
-    
     const submitHandler = () => {
         setCommit(true);
-        props.socket.emit('sending-name', {name: me, id: props.socket.id});
+        props.socket.emit('sending-info', {name: me, id: props.socket.id});
     }
 
     return (

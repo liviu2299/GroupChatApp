@@ -30,12 +30,6 @@ export default function Chat() {
         });
     }
 
-    useEffect(() => {
-        messages.forEach(element => {
-            console.log(element);
-        });
-    }, [messages])
-
     return (
         <div>
             <Messages />

@@ -59,18 +59,32 @@ io.on('connection', socket => {
 
         });
 
-        // Updating names
-        socket.on('sending-name', (payload) => {
+        // Updating info on buffered users
+        socket.on('sending-info', (payload) => {
             // Updating server database
             const update = users[roomID].find(user => user.id === payload.id);    
             update.name = payload.name;
+
+            users[roomID].forEach(user => {
+                console.log(user.name + ' ' + user.id);
+            });
+
+            const usersInThisRoom = users[roomID].filter(user => user.id !== payload.id);
+            usersInThisRoom.forEach(user => {
+            io.to(user.id).emit('update-info', {name: payload.name, id: payload.id});
+        });
             
-            console.log('sent');
+        })
+
+        // Updating info on buffering users
+        socket.on('user-buffered', (payload) => {
+
+            const temp = users[roomID].find(user => user.id === payload.id);
 
             // Sending signal to update on client
-            const usersInThisRoom = users[roomID].filter(user => user.id !== socket.id);
-            usersInThisRoom.forEach(user => {
-                io.to(user.id).emit('update-name', {name: payload.name, id: payload.id});
+                const usersInThisRoom = users[roomID].filter(user => user.id !== payload.id);
+                usersInThisRoom.forEach(user => {
+                io.to(user.id).emit('update-info', {name: temp.name, id: payload.id});
             });
         })
 

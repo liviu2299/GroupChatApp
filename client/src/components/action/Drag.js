@@ -6,8 +6,8 @@ export default function Drag(props) {
 
     const {socket} = useContext(SocketContext);
     const [maxDimensions, setMaxDimensions] = useState({
-        width: 0,
-        height: 0
+        width: 500,
+        height: 500
     })
 
     const [state, setState] = useState({
@@ -28,55 +28,55 @@ export default function Drag(props) {
     const handleMouseMove = useCallback(({clientX, clientY}) => {
         const translation = {x: clientX - state.origin.x + state.last.x, y: clientY - state.origin.y + state.last.y};
 
-        if(translation.y >= maxDimensions.height){ 
+        if(translation.y > maxDimensions.height){ // DOWN
             setState(state => ({
                 ...state,
                 translation: {x: translation.x, y: maxDimensions.height}
             }))
         }
-        if(translation.y < 0){   
+        if(translation.y < 0){   // UP
             setState(state => ({
                 ...state,
                 translation: {x: translation.x, y: 0}
             }))
         }
-        if(translation.x >= maxDimensions.width){   
+        if(translation.x > maxDimensions.width){   // RIGHT
             setState(state => ({
                 ...state,
                 translation: {x: maxDimensions.width, y: translation.y}
             }))
         }
-        if(translation.x < 0){   
+        if(translation.x < 0){    // LEFT
             setState(state => ({
                 ...state,
                 translation: {x: 0, y: translation.y}
             }))
         }
-        if(translation.x >= maxDimensions.width && translation.y >= maxDimensions.height){   
+        if(translation.x > maxDimensions.width && translation.y > maxDimensions.height){   // DOWN-RIGHT
             setState(state => ({
                 ...state,
                 translation: {x: maxDimensions.width, y: maxDimensions.height}
             }))
         }
-        if(translation.x >= maxDimensions.width && translation.y < 0){
+        if(translation.x > maxDimensions.width && translation.y < 0){   // UP-RIGHT
             setState(state => ({
                 ...state,
                 translation: {x: maxDimensions.width, y: 0}
             }))
         }
-        if(translation.x < 0 && translation.y < 0){
+        if(translation.x < 0 && translation.y < 0){     // UP-LEFT
             setState(state => ({
                 ...state,
                 translation: {x: 0, y: 0}
             }))
         }
-        if(translation.x < 0 && translation.y >= maxDimensions.height){
+        if(translation.x < 0 && translation.y > maxDimensions.height){      // DOWN-LEFT
             setState(state => ({
                 ...state,
                 translation: {x: 0, y: maxDimensions.height}
             }))
         }
-        if(translation.x < maxDimensions.width && translation.y < maxDimensions.height && translation.x >= 0 && translation.y >= 0){
+        if(translation.x <= maxDimensions.width && translation.y <= maxDimensions.height && translation.x >= 0 && translation.y >= 0){  // CENTER
             setState(state => ({
                 ...state,
                 translation
@@ -110,12 +110,13 @@ export default function Drag(props) {
     useEffect(() => {
         socket.emit('internal position incoming', {id: socket.id, position: {x: state.last.x, y: state.last.y}});
     }, [socket, state.last])
-
+    
+    
     useEffect(() => {
         setMaxDimensions({
             height: props.dimensions.height - 78,
             width: props.dimensions.width - 102
-        })
+        });
     }, [props.dimensions.height, props.dimensions.width])
 
     const styles = useMemo( () => ({

@@ -24,11 +24,7 @@ export default function Video(props) {
             ref.current.srcObject = stream;
         })
     }, []);
-
-    useEffect(() => {
-        console.log(props.name);
-    })
-
+    
     return (
         <div>
             <Border>
