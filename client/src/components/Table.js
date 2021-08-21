@@ -8,6 +8,8 @@ import Move from './action/Move';
 import Video from './video/Video';
 import MyVideo from './video/MyVideo';
 
+import classroom from '../classroom2.png'
+
 import './Table.css'
 
 export default function Table(props) {
@@ -19,18 +21,20 @@ export default function Table(props) {
 
     return (
         <div className="table" ref={divRef}>
-            Table {dimensions.width}x{dimensions.height}
-            <Drag dimensions={dimensions}>
-                <MyVideo data={userVideo}/>
-            </Drag>
-            {
-                users && users.map((user) => {
-                    return(
-                        <Move key={user.id} x={user.position.x} y={user.position.y} id={user.id}>
-                            <Video peer={user.peer} name={user.name}/>
-                        </Move>        
-                    )
-            })}
+            <div className="background">
+                <img src={classroom} alt="classroom" className="image"/>
+                <Drag dimensions={dimensions}>
+                    <MyVideo data={userVideo}/>
+                </Drag>
+                {
+                    users && users.map((user) => {
+                        return(
+                            <Move key={user.id} x={user.position.x} y={user.position.y} id={user.id}>
+                                <Video peer={user.peer} name={user.name}/>
+                            </Move>        
+                        )
+                })}
+            </div>
         </div>
     )
 }

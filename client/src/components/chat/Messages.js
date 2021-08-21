@@ -1,6 +1,4 @@
-import React, { useContext } from 'react'
-import ScrollToBottom from 'react-scroll-to-bottom'
-import ScrollableFeed from 'react-scrollable-feed'
+import React, { useContext, useRef, useEffect } from 'react'
 
 import Message from './Message';
 
@@ -11,15 +9,25 @@ import './Messages.css'
 export default function Messages() {
 
     const { messages } = useContext(SocketContext);
+    const messagesEndRef = useRef();
+
+    function scrollToBottom() {
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages])
 
     return (
-        <ScrollableFeed>
+        <div className="messages">
             {messages.map((message, i) => 
                 <div key={i}>
                         <Message message={message}/>                      
                 </div>
                 )
             }
-        </ScrollableFeed>
+            <div ref={messagesEndRef} />
+        </div>
     );
 }

@@ -16,7 +16,7 @@ export default function Move(props) {
 
     const styles = useMemo( () => ({
         left: `${position.x}px`,
-        transition: 'all 0.2s linear',
+        transition: 'all 0.2s ease-in-out',
         top: `${position.y}px`,
         position: 'absolute'
     }), [position])

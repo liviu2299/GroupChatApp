@@ -22,16 +22,18 @@ export default function Chat() {
     function sendMessage(event) {
         event.preventDefault();
         
-        socket.emit('send message', {user: me, text: message});
+        if(message !== ''){
+            socket.emit('send message', {user: me, text: message});
 
-        setMessage('');
-        setMessages((prevMessages) => {
-            return prevMessages.concat({user: me, text: message});
-        });
+            setMessage('');
+            setMessages((prevMessages) => {
+                return prevMessages.concat({user: me, text: message});
+            });
+        }  
     }
 
     return (
-        <div>
+        <div className="container">
             <Messages />
             <Input message={message} setMessage={setMessage} sendMessage={sendMessage}/>
         </div>

@@ -1,5 +1,17 @@
 .messages {
     padding: 5% 0;
-    overflow: auto;
+    overflow-y: auto;
     flex: auto;
+    height: 92%;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.messages::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.messages {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

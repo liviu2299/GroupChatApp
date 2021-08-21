@@ -123,7 +123,7 @@ export default function Drag(props) {
         cursor: state.isDragging ? '-webkit-grabbing' : '-webkit-grab',
         left: `${state.translation.x}px`,
         top: `${state.translation.y}px`,
-        transition: state.isDragging ? 'none' : 'transition: all 0.2s linear',
+        transition: state.isDragging ? 'none' : 'transition: ease-in-out 0.2s linear',
         zIndex: state.isDragging ? 2 : 1,
         position: 'absolute'
     }), [state.isDragging, state.translation])

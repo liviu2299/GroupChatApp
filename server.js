@@ -59,7 +59,7 @@ io.on('connection', socket => {
 
         });
 
-        // Updating info on buffered users
+        // Updating info on buffering users
         socket.on('sending-info', (payload) => {
             // Updating server database
             const update = users[roomID].find(user => user.id === payload.id);    
@@ -69,23 +69,28 @@ io.on('connection', socket => {
                 console.log(user.name + ' ' + user.id);
             });
 
+            console.log('update nume la apasare buton ' + payload.name + ' ' + payload.id);
+
             const usersInThisRoom = users[roomID].filter(user => user.id !== payload.id);
             usersInThisRoom.forEach(user => {
-            io.to(user.id).emit('update-info', {name: payload.name, id: payload.id});
+                io.to(user.id).emit('update-info', {name: payload.name, id: payload.id});
         });
             
         })
 
-        // Updating info on buffering users
-        socket.on('user-buffered', (payload) => {
+        // Updating info on buffered users
+        socket.on('get user info', (payload) => {
 
             const temp = users[roomID].find(user => user.id === payload.id);
 
-            // Sending signal to update on client
-                const usersInThisRoom = users[roomID].filter(user => user.id !== payload.id);
-                usersInThisRoom.forEach(user => {
-                io.to(user.id).emit('update-info', {name: temp.name, id: payload.id});
+            users[roomID].forEach(user => {
+                console.log(user.name + ' ' + user.id);
             });
+
+            console.log('update nume dupa conectare ' + temp.name + ' ' + payload.id);
+
+            // Sending signal to update on client
+            io.to(payload.myId).emit('update-info', {name: temp.name, id: payload.id});
         })
 
         // Sending Video

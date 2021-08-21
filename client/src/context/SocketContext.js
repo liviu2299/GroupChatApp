@@ -97,7 +97,7 @@ const ContextProvider = ({ children }) => {
                 })
 
                 console.log('joined');
-                socket.emit('user-buffered', {id: payload.callerID})
+                socket.emit('get user info', {myId: socket.id, id: payload.callerID})
 
             })
 
@@ -158,6 +158,9 @@ const ContextProvider = ({ children }) => {
 
             // Updating info
             socket.on('update-info', (payload) => {
+
+                console.log('update');
+                // console.log('Updatez ' + payload.id +' cu numele:' + payload.name);
 
                 const index = usersRef.current.findIndex(x => x.id === payload.id);
                 if(index > -1){
