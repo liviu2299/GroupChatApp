@@ -1,8 +1,13 @@
-import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
+import React, {useState, useMemo, useCallback, useEffect, useContext, useRef} from 'react'
 
 import { SocketContext } from '../../context/SocketContext'
 
 export default function Drag(props) {
+
+    const {backgroundRef} = props;
+    const {current} = backgroundRef;
+
+    const intervalRef = useRef(null);
 
     const {socket} = useContext(SocketContext);
     const [maxDimensions, setMaxDimensions] = useState({
@@ -23,6 +28,7 @@ export default function Drag(props) {
             isDragging: true,
             origin: {x: clientX, y: clientY}
         }));
+
     }, []);
 
     const handleMouseMove = useCallback(({clientX, clientY}) => {
@@ -45,7 +51,20 @@ export default function Drag(props) {
                 ...state,
                 translation: {x: maxDimensions.width, y: translation.y}
             }))
+
+            props.setScrollPosition((prevScrollPosition) => ({
+                x: prevScrollPosition.x + 5,
+                y: prevScrollPosition.y
+            }));
+            
+            //current.scrollBy(3, 0);
+
+            if(intervalRef.current) return;
+            intervalRef.current = setInterval(() => {
+                current.scrollBy(5, 0);
+            }, 10);
         }
+
         if(translation.x < 0){    // LEFT
             setState(state => ({
                 ...state,
@@ -81,6 +100,8 @@ export default function Drag(props) {
                 ...state,
                 translation
             }))
+
+            clearInt();
         } 
          
     }, [state.origin, state.last, maxDimensions.width, maxDimensions.height]);
@@ -94,6 +115,9 @@ export default function Drag(props) {
             last: state.translation,
             origin: {x: 0, y: 0}
         }));
+
+        clearInt();
+
     }, [handleMouseMove]);
 
     useEffect(() => {
@@ -110,14 +134,24 @@ export default function Drag(props) {
     useEffect(() => {
         socket.emit('internal position incoming', {id: socket.id, position: {x: state.last.x, y: state.last.y}});
     }, [socket, state.last])
-    
-    
+
     useEffect(() => {
         setMaxDimensions({
             height: props.dimensions.height - 78,
             width: props.dimensions.width - 102
         });
     }, [props.dimensions.height, props.dimensions.width])
+
+    useEffect(() => {
+        clearInt();
+    }, [])
+
+    function clearInt(){
+        if(intervalRef.current){
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    }
 
     const styles = useMemo( () => ({
         cursor: state.isDragging ? '-webkit-grabbing' : '-webkit-grab',
@@ -131,7 +165,9 @@ export default function Drag(props) {
     return (
         <div>
             <div style={styles} onMouseDown={handleMouseDown}>
+                {state.translation.x}x{state.translation.y}
                 {props.children}
+                {maxDimensions.width}x{maxDimensions.height}
             </div>
         </div>
         

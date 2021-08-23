@@ -15,17 +15,26 @@ import './Table.css'
 export default function Table(props) {
 
     const divRef = createRef();
+    const backgroundRef = createRef();
+
     const dimensions = useDimensions(divRef);
+
+    const [scrollPosition, setScrollPosition] = useState({
+        x: 0,
+        y: 0
+    });
 
     const { users, userVideo } = useContext(SocketContext);
 
     return (
         <div className="table" ref={divRef}>
-            <div className="background">
-                <img src={classroom} alt="classroom" className="image"/>
-                <Drag dimensions={dimensions}>
+            {dimensions.width}x{dimensions.height}
+            <Drag dimensions={dimensions} backgroundRef={backgroundRef} scrollPosition={scrollPosition} setScrollPosition={setScrollPosition}>
                     <MyVideo data={userVideo}/>
-                </Drag>
+            </Drag>
+            <div className="background" ref={backgroundRef}>
+                <img src={classroom} alt="classroom" className="image"/>
+                
                 {
                     users && users.map((user) => {
                         return(

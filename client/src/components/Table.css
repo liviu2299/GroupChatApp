@@ -9,6 +9,7 @@
     overflow: auto;
     max-height: 86vh;
     max-width: inherit;
+    position: relative;
 }
 
 .image{
