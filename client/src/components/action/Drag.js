@@ -2,12 +2,10 @@ import React, {useState, useMemo, useCallback, useEffect, useContext, useRef} fr
 
 import { SocketContext } from '../../context/SocketContext'
 
+const imageHeight = 1167 - 98;
+const imageWidth = 2000 - 104;
+
 export default function Drag(props) {
-
-    const {backgroundRef} = props;
-    const {current} = backgroundRef;
-
-    const intervalRef = useRef(null);
 
     const {socket} = useContext(SocketContext);
     const [maxDimensions, setMaxDimensions] = useState({
@@ -34,11 +32,11 @@ export default function Drag(props) {
     const handleMouseMove = useCallback(({clientX, clientY}) => {
         const translation = {x: clientX - state.origin.x + state.last.x, y: clientY - state.origin.y + state.last.y};
 
-        if(translation.y > maxDimensions.height){ // DOWN
+        if(translation.y >= imageHeight){ // DOWN
             setState(state => ({
                 ...state,
-                translation: {x: translation.x, y: maxDimensions.height}
-            }))
+                translation: {x: translation.x, y: imageHeight}
+            }))             
         }
         if(translation.y < 0){   // UP
             setState(state => ({
@@ -46,62 +44,54 @@ export default function Drag(props) {
                 translation: {x: translation.x, y: 0}
             }))
         }
-        if(translation.x > maxDimensions.width){   // RIGHT
+    
+        if(translation.x >= imageWidth){   // RIGHT
             setState(state => ({
                 ...state,
-                translation: {x: maxDimensions.width, y: translation.y}
+                translation: {x: imageWidth, y: translation.y}
             }))
-
-            props.setScrollPosition((prevScrollPosition) => ({
-                x: prevScrollPosition.x + 5,
-                y: prevScrollPosition.y
-            }));
-            
-            //current.scrollBy(3, 0);
-
-            if(intervalRef.current) return;
-            intervalRef.current = setInterval(() => {
-                current.scrollBy(5, 0);
-            }, 10);
         }
-
         if(translation.x < 0){    // LEFT
             setState(state => ({
                 ...state,
                 translation: {x: 0, y: translation.y}
             }))
+
         }
-        if(translation.x > maxDimensions.width && translation.y > maxDimensions.height){   // DOWN-RIGHT
+        if(translation.x > imageWidth && translation.y > imageHeight){   // DOWN-RIGHT
             setState(state => ({
                 ...state,
-                translation: {x: maxDimensions.width, y: maxDimensions.height}
+                translation: {x: imageWidth, y: imageHeight}
             }))
+
         }
-        if(translation.x > maxDimensions.width && translation.y < 0){   // UP-RIGHT
+        if(translation.x > imageWidth && translation.y < 0){   // UP-RIGHT
             setState(state => ({
                 ...state,
-                translation: {x: maxDimensions.width, y: 0}
+                translation: {x: imageWidth, y: 0}
             }))
+
         }
         if(translation.x < 0 && translation.y < 0){     // UP-LEFT
             setState(state => ({
                 ...state,
                 translation: {x: 0, y: 0}
             }))
+
         }
-        if(translation.x < 0 && translation.y > maxDimensions.height){      // DOWN-LEFT
+        if(translation.x < 0 && translation.y > imageHeight){      // DOWN-LEFT
             setState(state => ({
                 ...state,
-                translation: {x: 0, y: maxDimensions.height}
+                translation: {x: 0, y: imageHeight}
             }))
+
         }
-        if(translation.x <= maxDimensions.width && translation.y <= maxDimensions.height && translation.x >= 0 && translation.y >= 0){  // CENTER
+        if(translation.x <= imageWidth && translation.y <= imageHeight && translation.x >= 0 && translation.y >= 0){  // CENTER
             setState(state => ({
                 ...state,
                 translation
-            }))
+            })) 
 
-            clearInt();
         } 
          
     }, [state.origin, state.last, maxDimensions.width, maxDimensions.height]);
@@ -115,8 +105,6 @@ export default function Drag(props) {
             last: state.translation,
             origin: {x: 0, y: 0}
         }));
-
-        clearInt();
 
     }, [handleMouseMove]);
 
@@ -137,21 +125,23 @@ export default function Drag(props) {
 
     useEffect(() => {
         setMaxDimensions({
-            height: props.dimensions.height - 78,
+            height: props.dimensions.height - 99,
             width: props.dimensions.width - 102
         });
     }, [props.dimensions.height, props.dimensions.width])
 
+    /*
     useEffect(() => {
-        clearInt();
-    }, [])
-
-    function clearInt(){
-        if(intervalRef.current){
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
-    }
+        const {backgroundRef} = props;
+        const {current} = backgroundRef;
+        const height = current.scrollHeight;
+        const offset = current.offsetHeight;
+        const top = current.scrollTop;
+        console.log(height);
+        console.log(offset);
+        console.log(top);
+        
+    }, [])*/
 
     const styles = useMemo( () => ({
         cursor: state.isDragging ? '-webkit-grabbing' : '-webkit-grab',
@@ -159,15 +149,13 @@ export default function Drag(props) {
         top: `${state.translation.y}px`,
         transition: state.isDragging ? 'none' : 'transition: ease-in-out 0.2s linear',
         zIndex: state.isDragging ? 2 : 1,
-        position: 'absolute'
+        position: 'absolute',
     }), [state.isDragging, state.translation])
 
     return (
         <div>
             <div style={styles} onMouseDown={handleMouseDown}>
-                {state.translation.x}x{state.translation.y}
                 {props.children}
-                {maxDimensions.width}x{maxDimensions.height}
             </div>
         </div>
         

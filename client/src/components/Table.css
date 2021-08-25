@@ -1,21 +1,8 @@
-.table{
-    background-color: rgb(161, 161, 234);
-    height: 100%;
-    border-radius: 20px;
-}
-
 .background{
     background-color: #EF7A7A;
-    overflow: auto;
+    border-radius: 20px;
+    overflow: hidden;
     max-height: 86vh;
     max-width: inherit;
     position: relative;
-}
-
-.image{
-    -webkit-user-drag: none;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
 }
