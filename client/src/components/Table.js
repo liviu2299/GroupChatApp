@@ -28,7 +28,7 @@ export default function Table(props) {
                 users && users.map((user) => {
                     return(
                         <Move key={user.id} x={user.position.x} y={user.position.y} id={user.id}>
-                            <Video peer={user.peer} name={user.name}/>
+                            <Video peer={user.peer} name={user.name} color={user.color}/>
                         </Move>        
                     )
                 })}

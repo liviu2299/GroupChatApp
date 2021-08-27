@@ -1,32 +1,24 @@
-import React, {useRef, useContext} from 'react'
+import React, {useRef, useContext, useMemo, useEffect} from 'react'
 import styled from 'styled-components'
 
 import { UserContext } from '../../context/UserContext';
 
-const Border = styled.div`
-    border-radius: 20px;
-    overflow: hidden;
-    background-color: green;
-    border: 2px solid #4EB963;
-    width: 100px;
-    height: 75px;
-`;
-
-const Name = styled.p`
-    text-align: center;
-    margin-top: 0;
-`;
+import './Video.css'
 
 export default function MyVideo(props) {
 
-    const { me } = useContext(UserContext)
+    const { myName, color } = useContext(UserContext)
+
+    useEffect(() => {
+        console.log(color);
+    }, [])
 
     return (
         <div>
-            <Border>
+            <div className="myborder" style={{ border: `4px solid ${color.hex}` }}>
                 <video muted ref={props.data} autoPlay playsInline/>
-            </Border>
-            <Name unselectable="on">{me}</Name>
+            </div>
+            <div className="name" unselectable="on">{myName}</div>
         </div>
     )
 }

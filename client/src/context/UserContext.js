@@ -4,22 +4,20 @@ const UserContext = React.createContext();
 
 const ContextProvider = ({ children }) => {
 
-    const [me, setMe] = useState('');
+    const [myName, setMyName] = useState('');
+    const [color, setColor] = useState('');
     const [commit, setCommit] = useState(false);
 
-    /*
     useEffect(() => {
-        console.log('Usercontext: ' + me);
-    }, [me])
-
-    useEffect(() => {
-        console.log('Usercontext: ' + commit);
-    }, [commit])*/
+        console.log(color.hex);
+    }, [color])
 
     return (
         <UserContext.Provider value={{
-            me,
-            setMe,
+            myName,
+            color,
+            setMyName,
+            setColor,
             commit,
             setCommit
         }}>

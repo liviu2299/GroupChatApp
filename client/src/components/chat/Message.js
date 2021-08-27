@@ -1,17 +1,19 @@
 import React, { useContext } from 'react'
 
 import { UserContext } from '../../context/UserContext'
+import { SocketContext } from '../../context/SocketContext';
 
 import './Message.css'
 
 export default function Message({message}) {
 
-    const { me } = useContext(UserContext)
+    const { myName } = useContext(UserContext);
+    const { socket } = useContext(SocketContext);
 
     return (
         <div>
             {
-                message.user === 'bot' ?
+                message.id === 'bot' ?
                 (
                     <div className="messageContainer justifyCenter">
                         <div className="botMessageBox backgroundGray">
@@ -19,9 +21,9 @@ export default function Message({message}) {
                         </div>
                     </div>   
                 ) :[
-                    me === message.user ? (
+                    socket.id === message.id ? (
                         <div className="messageContainer justifyEnd">
-                            <p className="sentText1">{me}</p>
+                            <p className="sentText1">{myName}</p>
                             <div className="messageBox backgroundBlue">
                                 <p className="messageText">{message.text}</p>
                             </div>

@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { CirclePicker } from 'react-color'
 
 import './Form.css'
 
@@ -8,11 +9,11 @@ import { UserContext } from '../../context/UserContext';
 
 export default function RoomForm(props) {
 
-    const { me, setMe, setCommit } = useContext(UserContext);
+    const { myName, color, setMyName, setColor, setCommit } = useContext(UserContext);
 
     const submitHandler = () => {
         setCommit(true);
-        props.socket.emit('sending-info', {name: me, id: props.socket.id});
+        props.socket.emit('sending-info', {name: myName, id: props.socket.id, color: color.hex});
     }
 
     return (
@@ -22,9 +23,15 @@ export default function RoomForm(props) {
                     label="Name"
                     variant="outlined"
                     required
-                    value={me}
-                    onChange={e => setMe(e.target.value)}
+                    value={myName}
+                    onChange={e => setMyName(e.target.value)}
                 />
+                <div className="innerContainer">
+                    <CirclePicker 
+                        color={color}
+                        onChangeComplete={setColor}
+                    />
+                </div>
                 <div>
                     <Button type="submit" variant="contained">
                         Join

@@ -1,19 +1,7 @@
 import React, {useEffect, useRef} from 'react'
 import styled from 'styled-components'
 
-const Border = styled.div`
-    border-radius: 20px;
-    overflow: hidden;
-    background-color: red;
-    border: 2px solid #D32525;
-    width: 100px;
-    height: 75px;
-`;
-
-const Name = styled.p`
-    text-align: center;
-    margin-top: 0;
-`;
+import './Video.css'
 
 export default function Video(props) {
 
@@ -27,10 +15,10 @@ export default function Video(props) {
     
     return (
         <div>
-            <Border>
+            <div className="userborder" style={{ border: `4px solid ${props.color}` }}>
                 <video playsInline autoPlay ref={ref} />
-            </Border>
-            <Name unselectable="on">{props.name}</Name>
+            </div>
+            <div className="name" unselectable="on">{props.name}</div>
         </div>
         
         

@@ -13,7 +13,7 @@ export default function Chat() {
 
     const [message, setMessage] = useState('');
 
-    const { me } = useContext(UserContext);
+    const { myName } = useContext(UserContext);
     const { messages, setMessages, socket } = useContext(SocketContext);
 
     const url = window.location.href;
@@ -23,11 +23,11 @@ export default function Chat() {
         event.preventDefault();
         
         if(message !== ''){
-            socket.emit('send message', {user: me, text: message});
+            socket.emit('send message', {id: socket.id ,user: myName, text: message});
 
             setMessage('');
             setMessages((prevMessages) => {
-                return prevMessages.concat({user: me, text: message});
+                return prevMessages.concat({id: socket.id, user: myName, text: message});
             });
         }  
     }

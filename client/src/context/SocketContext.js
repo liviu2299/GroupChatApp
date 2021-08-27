@@ -8,8 +8,8 @@ const socket = io.connect("/");
 const SocketContext = React.createContext();
 
 const videoConstraints = {
-    height: { exact: 75 },
-    width: { exact: 100 }
+    height: { exact: 98 },
+    width: { exact: 130 }
 };
 
 const ContextProvider = ({ children }) => {
@@ -17,7 +17,7 @@ const ContextProvider = ({ children }) => {
     const [users, setUsers] = useState([]);
     const [messages, setMessages] = useState([]);
 
-    const { me } = useContext(UserContext)
+    const { myName, color } = useContext(UserContext)
 
     const usersRef = useRef([]);
     const userVideo = useRef();
@@ -31,11 +31,11 @@ const ContextProvider = ({ children }) => {
             userVideo.current.srcObject = stream;
             
             // Joining room depending if the name is entered
-            socket.emit('join room', roomID, me);
+            socket.emit('join room', {roomID: roomID, userInfo: {name: myName, color: color.hex}});
 
             // Welcome to the Room msg
             setMessages((prevMessages) => {
-                return prevMessages.concat({user: 'bot', text: 'Welcome to the room'});
+                return prevMessages.concat({id: "bot", user: 'bot', text: 'Welcome to the room'});
             });
                 
             // Getting users already in the room (1)
@@ -50,6 +50,7 @@ const ContextProvider = ({ children }) => {
                     usersRef.current.push({
                         id: user.id,
                         name: user.name,
+                        color: user.color,
                         position: {
                             x: initialPosition[user.id].x,
                             y: initialPosition[user.id].y
@@ -60,6 +61,7 @@ const ContextProvider = ({ children }) => {
                         return prevUsers.concat({
                             id: user.id,
                             name: user.name,
+                            color: user.color,
                             position: {
                                 x: initialPosition[user.id].x,
                                 y: initialPosition[user.id].y
@@ -117,7 +119,7 @@ const ContextProvider = ({ children }) => {
                 })
 
                 setMessages((prevMessages) => {
-                    return prevMessages.concat({user: 'bot', text: `${user.name} left the room`});
+                    return prevMessages.concat({id: "bot", user: 'bot', text: `${user.name} left the room`});
                 });
                 console.log('Deconectat: ' + id);
             })
@@ -167,7 +169,8 @@ const ContextProvider = ({ children }) => {
                     
                     usersRef.current[index] = {
                         ...usersRef.current[index],
-                        name: payload.name
+                        name: payload.name,
+                        color: payload.color
                     }
                     
                     setUsers( (prevUsers) => {
@@ -175,7 +178,8 @@ const ContextProvider = ({ children }) => {
                         const index = data.findIndex(x => x.id === payload.id);
                         data[index] = {
                             ...data[index],
-                            name: payload.name
+                            name: payload.name,
+                            color: payload.color
                         }
                         return (data);
                     })
@@ -183,7 +187,7 @@ const ContextProvider = ({ children }) => {
                     if(payload.name)
                     {
                         setMessages((prevMessages) => {
-                            return prevMessages.concat({user: 'bot', text: `${payload.name} joined the room`});
+                            return prevMessages.concat({id: "bot", user: 'bot', text: `${payload.name} joined the room`});
                         });
                     }
                 } 
@@ -192,7 +196,7 @@ const ContextProvider = ({ children }) => {
             // Getting message
             socket.on('get message', (payload) => {
                 setMessages((prevMessages) => {
-                    return prevMessages.concat({user: payload.user, text: payload.text});
+                    return prevMessages.concat({id: payload.id, user: payload.user, text: payload.text});
                 });
             })
             
@@ -230,6 +234,13 @@ const ContextProvider = ({ children }) => {
  
         return peer;
     }
+
+    useEffect(() => {
+        users.forEach(element => {
+            console.log(element.name + ' ' + element.color);
+        });
+        
+    }, [users])
 
     return (
         <SocketContext.Provider value={{

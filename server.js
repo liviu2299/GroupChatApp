@@ -16,21 +16,22 @@ const initialPosition = {};     // Returns the initial position of a user
 
 io.on('connection', socket => {
 
-    socket.on('join room', (roomID, me) => {
+    socket.on('join room', ({roomID, userInfo}) => {
 
-        console.log(`User connected: ${socket.id}:${me} to room: ${roomID}`);
-
+        console.log(`User connected: ${socket.id}:${userInfo.name} to room: ${roomID}`);
         // If room exists update
         if(users[roomID]){
             users[roomID].push({
                 id: socket.id,
-                name: me
+                name: userInfo.name,
+                color: userInfo.color
             });
         } // If not create
         else {
             users[roomID] = [{
                 id: socket.id,
-                name: me
+                name: userInfo.name,
+                color: userInfo.color
             }];
         }
 
@@ -64,18 +65,18 @@ io.on('connection', socket => {
             // Updating server database
             const update = users[roomID].find(user => user.id === payload.id);    
             update.name = payload.name;
+            update.color = payload.color;
 
             users[roomID].forEach(user => {
-                console.log(user.name + ' ' + user.id);
+                console.log(user.name + ' ' + user.id + ' ' + user.color);
             });
 
             console.log('update nume la apasare buton ' + payload.name + ' ' + payload.id);
 
             const usersInThisRoom = users[roomID].filter(user => user.id !== payload.id);
             usersInThisRoom.forEach(user => {
-                io.to(user.id).emit('update-info', {name: payload.name, id: payload.id});
-        });
-            
+                io.to(user.id).emit('update-info', {name: payload.name, id: payload.id, color: payload.color});
+            });
         })
 
         // Updating info on buffered users
@@ -90,7 +91,7 @@ io.on('connection', socket => {
             console.log('update nume dupa conectare ' + temp.name + ' ' + payload.id);
 
             // Sending signal to update on client
-            io.to(payload.myId).emit('update-info', {name: temp.name, id: payload.id});
+            io.to(payload.myId).emit('update-info', {name: temp.name, id: payload.id, color: temp.color});
         })
 
         // Sending Video
