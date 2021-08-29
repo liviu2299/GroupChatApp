@@ -1,13 +1,16 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext, useRef} from 'react'
 
 import { SocketContext } from '../../context/SocketContext'
+import { UserContext } from '../../context/UserContext';
 
 const imageHeight = 1167 - 98;
 const imageWidth = 2000 - 104;
 
 export default function Drag(props) {
 
-    const {socket} = useContext(SocketContext);
+    const { socket } = useContext(SocketContext);
+    const { setProximity, proximity }  = useContext(UserContext);
+
     const [maxDimensions, setMaxDimensions] = useState({
         width: 500,
         height: 500
@@ -93,6 +96,8 @@ export default function Drag(props) {
             })) 
 
         } 
+
+        //setProximity(translation);
          
     }, [state.origin, state.last, maxDimensions.width, maxDimensions.height]);
 
@@ -130,18 +135,9 @@ export default function Drag(props) {
         });
     }, [props.dimensions.height, props.dimensions.width])
 
-    /*
     useEffect(() => {
-        const {backgroundRef} = props;
-        const {current} = backgroundRef;
-        const height = current.scrollHeight;
-        const offset = current.offsetHeight;
-        const top = current.scrollTop;
-        console.log(height);
-        console.log(offset);
-        console.log(top);
-        
-    }, [])*/
+        setProximity(state.translation);
+    }, [state.translation])
 
     const styles = useMemo( () => ({
         cursor: state.isDragging ? '-webkit-grabbing' : '-webkit-grab',

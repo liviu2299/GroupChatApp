@@ -8,18 +8,21 @@ const ContextProvider = ({ children }) => {
     const [color, setColor] = useState('');
     const [commit, setCommit] = useState(false);
 
-    useEffect(() => {
-        console.log(color.hex);
-    }, [color])
+    const [proximity, setProximity] = useState({
+        x: 0,
+        y: 0
+    });
 
     return (
         <UserContext.Provider value={{
             myName,
             color,
+            proximity,
             setMyName,
             setColor,
             commit,
-            setCommit
+            setCommit,
+            setProximity
         }}>
             {children}
         </UserContext.Provider>

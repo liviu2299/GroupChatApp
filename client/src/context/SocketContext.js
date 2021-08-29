@@ -30,7 +30,7 @@ const ContextProvider = ({ children }) => {
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
             userVideo.current.srcObject = stream;
             
-            // Joining room depending if the name is entered
+            // Joining room
             socket.emit('join room', {roomID: roomID, userInfo: {name: myName, color: color.hex}});
 
             // Welcome to the Room msg

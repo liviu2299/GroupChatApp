@@ -21,6 +21,5 @@ export default function Video(props) {
             <div className="name" unselectable="on">{props.name}</div>
         </div>
         
-        
     );
 }

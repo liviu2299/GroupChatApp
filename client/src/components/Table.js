@@ -8,6 +8,8 @@ import Move from './action/Move';
 import Video from './video/Video';
 import MyVideo from './video/MyVideo';
 import Image from './Image'
+import Rectangle from './dummies/Rectangle';
+import Circle from './action/Circle';
 
 import './Table.css'
 
@@ -21,6 +23,7 @@ export default function Table(props) {
     return (
         <div className="background" ref={backgroundRef} >
             <Image backgroundRef={backgroundRef}/>
+            <Circle />
             <Drag dimensions={dimensions}>
                 <MyVideo data={userVideo}/>
             </Drag>
