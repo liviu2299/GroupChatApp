@@ -27,14 +27,16 @@ export default function Table(props) {
             <Drag dimensions={dimensions}>
                 <MyVideo data={userVideo}/>
             </Drag>
-            {
-                users && users.map((user) => {
-                    return(
-                        <Move key={user.id} x={user.position.x} y={user.position.y} id={user.id}>
-                            <Video peer={user.peer} name={user.name} color={user.color}/>
-                        </Move>        
-                    )
-                })}
+            <div>
+                {
+                    users && users.map((user) => {
+                        return(
+                            <Move key={user.id} x={user.position.x} y={user.position.y} id={user.id}>
+                                <Video peer={user.peer} id={user.id} name={user.name} color={user.color}/>
+                            </Move>        
+                        )
+                    })}
+            </div>
         </div>
     )
 }

@@ -5,7 +5,7 @@ import { UserContext } from '../../context/UserContext'
 
 export default function Circle(props) {
 
-    const { proximity }  = useContext(UserContext);
+    const { proximity, usersAround, setUsersAround }  = useContext(UserContext);
     const { users } = useContext(SocketContext);
 
     const radius = 300;
@@ -14,7 +14,6 @@ export default function Circle(props) {
         y: 0
     })
     const [color, setColor] = useState('black');
-    const [usersAround, setUsersAround] = useState([]);
 
     function clamp(min, max, value) {
         if(value < min){
@@ -84,20 +83,10 @@ export default function Circle(props) {
         }else{
             setColor('black');
         }
-        console.log(usersAround);
     }, [usersAround])
 
     return (
         <div>
-            <div>
-                {
-                    usersAround.map((user) => {
-                        return(
-                            <div key={user.id}>{user.id}</div>
-                        )
-                    })
-                }
-            </div>
             <div style={circle}></div>
         </div>
     )

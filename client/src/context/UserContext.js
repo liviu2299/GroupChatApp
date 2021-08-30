@@ -13,14 +13,18 @@ const ContextProvider = ({ children }) => {
         y: 0
     });
 
+    const [usersAround, setUsersAround] = useState([]);
+
     return (
         <UserContext.Provider value={{
             myName,
             color,
             proximity,
+            usersAround,
+            commit,
             setMyName,
             setColor,
-            commit,
+            setUsersAround,   
             setCommit,
             setProximity
         }}>

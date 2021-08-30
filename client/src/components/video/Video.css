@@ -19,6 +19,37 @@
 }
 
 .name{
-    text-align: center;
     margin-top: 0;
+    text-align: center
+}
+
+.name2{
+    margin-top: 0;
+    text-align: center;
+    width: fit-content;
+    margin: 0 auto;
+    float: center;
+}
+
+.on{
+    height: 18px;
+    width: 18px;
+    float: right;
+    margin-left: 5px;
+    background-image: url("../../on.png");
+    background-size: contain;
+}
+
+.off{
+    height: 18px;
+    width: 18px;
+    float: right;
+    margin-left: 5px;
+    background-image: url("../../off.png");
+    background-size: contain;
+}
+
+.info{
+    width: 137px;
+    height: fit-content
 }
