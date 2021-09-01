@@ -1,15 +1,14 @@
-import React, {useEffect, useState, useRef, createRef, useCallback, useContext} from 'react'
+import { createRef, useContext } from 'react'
 
-import { SocketContext } from '../context/SocketContext';
+import { SocketContext } from '../../context/SocketContext';
 
-import useDimensions from './hooks/useDimensions';
-import Drag from './action/Drag';
-import Move from './action/Move';
-import Video from './video/Video';
-import MyVideo from './video/MyVideo';
+import useDimensions from '../hooks/useDimensions';
+import Drag from '../action/Drag';
+import Move from '../action/Move';
+import Video from '../video/Video';
+import MyVideo from '../video/MyVideo';
 import Image from './Image'
-import Rectangle from './dummies/Rectangle';
-import Circle from './action/Circle';
+import Circle from '../action/Circle';
 
 import './Table.css'
 
@@ -32,7 +31,7 @@ export default function Table(props) {
                     users && users.map((user) => {
                         return(
                             <Move key={user.id} x={user.position.x} y={user.position.y} id={user.id}>
-                                <Video peer={user.peer} id={user.id} name={user.name} color={user.color}/>
+                                <Video key={user.id} peer={user.peer} id={user.id} name={user.name} color={user.color}/>
                             </Move>        
                         )
                     })}

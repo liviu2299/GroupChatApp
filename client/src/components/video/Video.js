@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState, useContext} from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
 
 import { UserContext } from '../../context/UserContext';
 
@@ -6,11 +6,11 @@ import './Video.css'
 
 export default function Video(props) {
 
+    const { usersAround } = useContext(UserContext);
+
     const ref = useRef();
 
     const [mute, setMute] = useState(true);
-
-    const { usersAround } = useContext(UserContext);
 
     useEffect(() => {
         props.peer.on("stream", stream => {
@@ -49,5 +49,3 @@ export default function Video(props) {
         
     );
 }
-
-// <video playsInline autoPlay ref={ref} />)

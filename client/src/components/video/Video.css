@@ -4,7 +4,7 @@
     border: 4px solid #24ad4d;
     width: 130px;
     height: 98px;
-    background-image: url("../../noprofile.png");
+    background-image: url("../../public/noprofile.png");
     background-size: contain;
 }
 
@@ -14,7 +14,7 @@
     border: 4px solid #D32525;
     width: 130px;
     height: 98px;
-    background-image: url("../../noprofile.png");
+    background-image: url("../../public/noprofile.png");
     background-size: contain;
 }
 
@@ -36,7 +36,7 @@
     width: 18px;
     float: right;
     margin-left: 5px;
-    background-image: url("../../on.png");
+    background-image: url("../../public/on.png");
     background-size: contain;
 }
 
@@ -45,7 +45,7 @@
     width: 18px;
     float: right;
     margin-left: 5px;
-    background-image: url("../../off.png");
+    background-image: url("../../public/off.png");
     background-size: contain;
 }
 

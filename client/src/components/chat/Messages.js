@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect } from 'react'
+import { useContext, useRef, useEffect } from 'react'
 
 import Message from './Message';
 
@@ -23,7 +23,7 @@ export default function Messages() {
         <div className="messages">
             {messages.map((message, i) => 
                 <div key={i}>
-                        <Message message={message}/>                      
+                        <Message key={i} message={message}/>                      
                 </div>
                 )
             }

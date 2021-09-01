@@ -1,5 +1,3 @@
-import React from 'react'
-
 import './Input.css'
 
 export default function Input(props) {
@@ -12,7 +10,6 @@ export default function Input(props) {
                 placeholder="Send a message..."
                 onChange={(event) => props.setMessage(event.target.value)}
                 onKeyPress={event => event.key === 'Enter' ? props.sendMessage(event) : null}/>
-            {/*<button className="sendButton" onClick={(event) => props.sendMessage(event)}>Send</button>*/}
         </form>
     )
 }

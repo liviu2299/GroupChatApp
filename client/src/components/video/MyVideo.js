@@ -1,4 +1,4 @@
-import React, {useRef, useContext, useMemo, useEffect} from 'react'
+import { useContext, useEffect } from 'react'
 
 import { UserContext } from '../../context/UserContext';
 
@@ -7,11 +7,6 @@ import './Video.css'
 export default function MyVideo(props) {
 
     const { myName, color } = useContext(UserContext)
-    const temp = "muted";
-
-    useEffect(() => {
-        console.log(props.name);
-    }, [])
 
     return (
         <div>

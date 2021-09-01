@@ -1,17 +1,13 @@
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Button, IconButton, Grid, Paper } from '@material-ui/core'
+import { AppBar, Toolbar, IconButton, Grid, Paper } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useHistory } from 'react-router-dom'
 
-import Move from '../components/action/Move'
-import Drag from '../components/action/Drag'
-import Video from '../components/video/Video'
-import MyVideo from '../components/video/MyVideo';
 import RoomForm from '../components/form/RoomForm';
 import Backdrop from '../components/form/Backdrop';
 import Chat from '../components/chat/Chat';
-import Table from '../components/Table';
+import Table from '../components/workspace/Table';
 
 import { SocketContext } from '../context/SocketContext'
 import { UserContext } from '../context/UserContext';
@@ -28,13 +24,13 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '10px'
     },
     chat: {
-        height: '86vh',
+        height: '88vh',
         borderRadius: 20,
         position: "relative",
         backgroundColor: theme.palette.success.light
     },
     table: {
-        height: '86vh',
+        height: '88vh',
         borderRadius: 20,
         position: "relative",
         backgroundColor: theme.palette.action.disabledBackground
@@ -49,7 +45,7 @@ export default function Room(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const { users, userVideo, socket } = useContext(SocketContext);
+    const { socket } = useContext(SocketContext);
     const { commit } = useContext(UserContext)
 
     const url = window.location.href;
@@ -61,8 +57,8 @@ export default function Room(props) {
     }
 
     useEffect(() => {
-        console.log(users);
-    }, [users])
+        socket.connect();
+    }, [])
 
     return (
         <div className={classes.root}>
@@ -72,7 +68,6 @@ export default function Room(props) {
                         <IconButton edge="start" onClick={backHandler}>
                             <ArrowBackIcon />
                         </IconButton>
-                        <Button color="inherit">User</Button>
                     </Toolbar>
                 </AppBar>
             </div>

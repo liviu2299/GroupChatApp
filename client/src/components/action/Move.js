@@ -1,25 +1,13 @@
-import React, {useState, useMemo, useEffect} from 'react'
+import { useMemo } from 'react'
 
 export default function Move(props) {
 
-    const [position, setPosition] = useState({
-        x: 0,
-        y: 0
-    });
-    
-    useEffect( () => {
-        setPosition({
-            x: props.x,
-            y: props.y
-        })
-    }, [props.x, props.y])
-
     const styles = useMemo( () => ({
-        left: `${position.x}px`,
+        left: `${props.x}px`,
         transition: 'all 0.2s ease-in-out',
-        top: `${position.y}px`,
+        top: `${props.y}px`,
         position: 'absolute'
-    }), [position])
+    }), [props.x, props.y])
     
     return (
         <div>

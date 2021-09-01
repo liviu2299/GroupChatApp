@@ -1,6 +1,6 @@
-import React, {useEffect, useState, useRef, createRef, useCallback, useContext} from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
-import classroom from '../classroom2.png'
+import classroom from '../../public/classroom2.png'
 import './Image.css'
 
 export default function Image(props) {
@@ -22,16 +22,18 @@ export default function Image(props) {
     }, [])
 
     const handleMouseMove = useCallback(({clientX, clientY}) => {
-        const translation = {x: (clientX - scrollPosition.origin.x + scrollPosition.last.x) , y: (clientY - scrollPosition.origin.y + scrollPosition.last.y)}
-
+        const translation = {x: (clientX - scrollPosition.origin.x + scrollPosition.last.x) , y: (clientY - scrollPosition.origin.y + scrollPosition.last.y)};
+    
         setScrollPosition(scrollPosition => ({
             ...scrollPosition,
             translation
-        }))
-
-        //props.backgroundRef.current.scrollBy(-translation.x, -translation.y);
-        props.backgroundRef.current.scrollTop = -translation.y;
-        props.backgroundRef.current.scrollLeft = -translation.x;
+        }));
+        
+        if(props.backgroundRef.current)
+        {
+            props.backgroundRef.current.scrollTop = -translation.y;
+            props.backgroundRef.current.scrollLeft = -translation.x;
+        }
 
     }, [scrollPosition.origin, scrollPosition.last]);
 

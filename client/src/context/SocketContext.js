@@ -70,7 +70,6 @@ const ContextProvider = ({ children }) => {
                         })
                     })
                 });
-                console.log('Am primit useri: ' + usersInThisRoom);
             })
             
             // Getting new user (2)
@@ -98,9 +97,7 @@ const ContextProvider = ({ children }) => {
                     })
                 })
 
-                console.log('joined');
-                socket.emit('get user info', {myId: socket.id, id: payload.callerID})
-
+                socket.emit('get user info', {myId: socket.id, id: payload.callerID});
             })
 
             socket.on('receiving returned signal', payload => {
@@ -121,12 +118,10 @@ const ContextProvider = ({ children }) => {
                 setMessages((prevMessages) => {
                     return prevMessages.concat({id: "bot", user: 'bot', text: `${user.name} left the room`});
                 });
-                console.log('Deconectat: ' + id);
             })
 
             // Updating the position
             socket.on("external position incoming", (payload) => {
-                
                 
                 const index = usersRef.current.findIndex(x => x.id === payload.id);
                 
@@ -138,7 +133,6 @@ const ContextProvider = ({ children }) => {
                             y: payload.position.y
                         }
                 }}
-                
                 
                 if(index > -1){
                     setUsers( (prevUsers) => {
@@ -154,15 +148,10 @@ const ContextProvider = ({ children }) => {
                         return (data);
                     }) 
                 }           
-
-                console.log('Userul ' + payload.id + ' s-a updatat la ' + payload.position.x + ' ' + payload.position.y);
             })
 
             // Updating info
             socket.on('update-info', (payload) => {
-
-                console.log('update');
-                // console.log('Updatez ' + payload.id +' cu numele:' + payload.name);
 
                 const index = usersRef.current.findIndex(x => x.id === payload.id);
                 if(index > -1){
@@ -234,13 +223,6 @@ const ContextProvider = ({ children }) => {
  
         return peer;
     }
-
-    useEffect(() => {
-        users.forEach(element => {
-            console.log(element.name + ' ' + element.color);
-        });
-        
-    }, [users])
 
     return (
         <SocketContext.Provider value={{

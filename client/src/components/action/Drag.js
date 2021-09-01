@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useCallback, useEffect, useContext, useRef} from 'react'
+import { useState, useMemo, useCallback, useEffect, useContext } from 'react'
 
 import { SocketContext } from '../../context/SocketContext'
 import { UserContext } from '../../context/UserContext';
@@ -9,12 +9,7 @@ const imageWidth = 2000 - 104;
 export default function Drag(props) {
 
     const { socket } = useContext(SocketContext);
-    const { setProximity, proximity }  = useContext(UserContext);
-
-    const [maxDimensions, setMaxDimensions] = useState({
-        width: 500,
-        height: 500
-    })
+    const { setProximity }  = useContext(UserContext);
 
     const [state, setState] = useState({
         isDragging: false,
@@ -93,13 +88,10 @@ export default function Drag(props) {
             setState(state => ({
                 ...state,
                 translation
-            })) 
-
+            }))
         } 
-
-        //setProximity(translation);
          
-    }, [state.origin, state.last, maxDimensions.width, maxDimensions.height]);
+    }, [state.origin, state.last]);
 
     const handleMouseUp = useCallback(() => {
         window.removeEventListener('mousemove', handleMouseMove);
@@ -127,13 +119,6 @@ export default function Drag(props) {
     useEffect(() => {
         socket.emit('internal position incoming', {id: socket.id, position: {x: state.last.x, y: state.last.y}});
     }, [socket, state.last])
-
-    useEffect(() => {
-        setMaxDimensions({
-            height: props.dimensions.height - 99,
-            width: props.dimensions.width - 102
-        });
-    }, [props.dimensions.height, props.dimensions.width])
 
     useEffect(() => {
         setProximity(state.translation);
