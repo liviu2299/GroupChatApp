@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef, useContext} from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
+import { useHistory } from 'react-router-dom'
 
 import { UserContext } from './UserContext'
 
@@ -19,6 +20,8 @@ const ContextProvider = ({ children }) => {
 
     const { myName, color } = useContext(UserContext)
 
+    const history = useHistory();
+
     const usersRef = useRef([]);
     const userVideo = useRef();
 
@@ -26,12 +29,17 @@ const ContextProvider = ({ children }) => {
     const roomID = url.substring(url.lastIndexOf('/')+1);
 
     useEffect(() => {
-  
+
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
             userVideo.current.srcObject = stream;
             
             // Joining room
             socket.emit('join room', {roomID: roomID, userInfo: {name: myName, color: color.hex}});
+
+            socket.on('waiting room', () => {
+                history.push(`/waitingroom`);
+                socket.disconnect();
+            })
 
             // Welcome to the Room msg
             setMessages((prevMessages) => {

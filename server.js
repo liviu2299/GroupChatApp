@@ -9,7 +9,7 @@ const io = socket(server, {
     pingInterval: 1000
 });
 
-const users = [{}];             // Returns the users from a room
+const users = [];             // Returns the users from a room
 const socketToRoom = {};        // Returns the room of a user
 
 const initialPosition = {};     // Returns the initial position of a user
@@ -18,14 +18,20 @@ io.on('connection', socket => {
 
     socket.on('join room', ({roomID, userInfo}) => {
 
-        console.log(`User connected: ${socket.id}:${userInfo.name} to room: ${roomID}`);
         // If room exists update
         if(users[roomID]){
-            users[roomID].push({
-                id: socket.id,
-                name: userInfo.name,
-                color: userInfo.color
-            });
+            const length = users[roomID].length;
+            if (length > 3) {
+                socket.emit('waiting room');
+                return;   
+            }
+            else{
+                users[roomID].push({
+                    id: socket.id,
+                    name: userInfo.name,
+                    color: userInfo.color
+                });
+            }
         } // If not create
         else {
             users[roomID] = [{
@@ -34,6 +40,7 @@ io.on('connection', socket => {
                 color: userInfo.color
             }];
         }
+        console.log(`User connected: ${socket.id}: to room: ${roomID}`);
 
         socketToRoom[socket.id] = roomID;
 
@@ -67,12 +74,6 @@ io.on('connection', socket => {
             update.name = payload.name;
             update.color = payload.color;
 
-            users[roomID].forEach(user => {
-                console.log(user.name + ' ' + user.id + ' ' + user.color);
-            });
-
-            console.log('update nume la apasare buton ' + payload.name + ' ' + payload.id);
-
             const usersInThisRoom = users[roomID].filter(user => user.id !== payload.id);
             usersInThisRoom.forEach(user => {
                 io.to(user.id).emit('update-info', {name: payload.name, id: payload.id, color: payload.color});
@@ -83,12 +84,6 @@ io.on('connection', socket => {
         socket.on('get user info', (payload) => {
 
             const temp = users[roomID].find(user => user.id === payload.id);
-
-            users[roomID].forEach(user => {
-                console.log(user.name + ' ' + user.id);
-            });
-
-            console.log('update nume dupa conectare ' + temp.name + ' ' + payload.id);
 
             // Sending signal to update on client
             io.to(payload.myId).emit('update-info', {name: temp.name, id: payload.id, color: temp.color});
