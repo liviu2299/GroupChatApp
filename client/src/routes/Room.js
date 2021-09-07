@@ -12,6 +12,8 @@ import Table from '../components/workspace/Table';
 import { SocketContext } from '../context/SocketContext'
 import { UserContext } from '../context/UserContext';
 
+import './Room.css'
+
 const useStyles = makeStyles((theme) => ({
     Toolbar: {
         minHeight: 36
@@ -24,16 +26,18 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '10px'
     },
     chat: {
-        height: '88vh',
+        height: '90vh',
         borderRadius: 20,
         position: "relative",
-        backgroundColor: theme.palette.success.light
+        backgroundColor: theme.palette.success.light,
+        border: "2px solid black",
     },
     table: {
-        height: '88vh',
+        height: '90vh',
         borderRadius: 20,
         position: "relative",
-        backgroundColor: theme.palette.action.disabledBackground
+        backgroundColor: theme.palette.action.disabledBackground,
+        border: "2px solid black",
     },
     grid: {
         justifyContent: 'center'
@@ -45,8 +49,8 @@ export default function Room(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const { socket } = useContext(SocketContext);
-    const { commit } = useContext(UserContext)
+    const { socket, numberOfUsers } = useContext(SocketContext);
+    const { commit, myName, color } = useContext(UserContext)
 
     const url = window.location.href;
     const roomID = url.substring(url.lastIndexOf('/')+1);
@@ -54,6 +58,7 @@ export default function Room(props) {
     function backHandler() {
         history.push(`/`);
         socket.disconnect();
+        //socket.emit('leave room', socket.id);
     }
 
     useEffect(() => {
@@ -68,16 +73,21 @@ export default function Room(props) {
                         <IconButton edge="start" onClick={backHandler}>
                             <ArrowBackIcon />
                         </IconButton>
+                        {commit && <div className="color" style={{ backgroundColor: `${color.hex}` }}></div>}
+                        {commit && <div className="name">{myName}</div>} 
+                        <div className="title">Room: </div>
+                        <div className="room">{roomID.substring(0, 8)}</div>
+                        {commit && <div className="number">Online: {numberOfUsers+1}</div>}           
                     </Toolbar>
                 </AppBar>
             </div>
             <Grid container spacing={2} className={classes.grid}>  
-                <Grid item xs={8} sm={8} md={8} lg={8}>  
+                <Grid item xs={9} sm={9} md={8} lg={9}>  
                     <Paper className={classes.table}>
                         <Table />
                     </Paper>
                 </Grid>
-                <Grid item xs={4} sm={3} md={3} lg={2}>
+                <Grid item xs={3} sm={3} md={3} lg={2}>
                     <Paper className={classes.chat}>
                         <Chat />
                     </Paper>

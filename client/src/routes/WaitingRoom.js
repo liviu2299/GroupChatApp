@@ -2,7 +2,7 @@ export default function WaitingRoom() {
 
     return (
         <div>
-            Room is full.
+            Room is full. Please wait.
         </div>
     )
 }

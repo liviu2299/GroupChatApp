@@ -3,6 +3,8 @@ import { useState, useMemo, useCallback, useEffect, useContext } from 'react'
 import { SocketContext } from '../../context/SocketContext'
 import { UserContext } from '../../context/UserContext';
 
+import './Drag.css'
+
 const imageHeight = 1167 - 98;
 const imageWidth = 2000 - 104;
 
@@ -126,16 +128,15 @@ export default function Drag(props) {
 
     const styles = useMemo( () => ({
         cursor: state.isDragging ? '-webkit-grabbing' : '-webkit-grab',
-        left: `${state.translation.x}px`,
-        top: `${state.translation.y}px`,
-        transition: state.isDragging ? 'none' : 'transition: ease-in-out 0.2s linear',
+        transform: `translate3d(${state.translation.x}px, ${state.translation.y}px, 0)`,
+        transition: state.isDragging ? 'none' : 'transition: transform ease-in-out 0.2s',
         zIndex: state.isDragging ? 2 : 1,
         position: 'absolute',
     }), [state.isDragging, state.translation])
 
     return (
         <div>
-            <div style={styles} onMouseDown={handleMouseDown}>
+            <div style={styles} className="drag" onMouseDown={handleMouseDown}>
                 {props.children}
             </div>
         </div>

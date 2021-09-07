@@ -33,9 +33,9 @@ export default function Video(props) {
     return (
         <div>    
             <div className="userborder" style={{ border: `4px solid ${props.color}` }}>
-                <video muted playsInline autoPlay ref={ref} />
+                <video disablePictureInPicture muted playsInline autoPlay ref={ref} />
             </div>
-            <div className="info">
+            <div className="info" unselectable="on">
                 <div className="name2" unselectable="on">
                     {props.name}
                     {

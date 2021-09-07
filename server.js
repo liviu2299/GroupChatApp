@@ -86,7 +86,9 @@ io.on('connection', socket => {
             const temp = users[roomID].find(user => user.id === payload.id);
 
             // Sending signal to update on client
-            io.to(payload.myId).emit('update-info', {name: temp.name, id: payload.id, color: temp.color});
+            if(temp){
+                io.to(payload.myId).emit('update-info', {name: temp.name, id: payload.id, color: temp.color});
+            }   
         })
 
         // Sending Video
@@ -106,6 +108,23 @@ io.on('connection', socket => {
                 io.to(user.id).emit('get message', payload);
             });
         });
+
+        // Leave
+        socket.on('leave room', (id) => {
+            // Update the users in the room
+            const roomID = socketToRoom[socket.id];
+            let room = users[roomID];
+            if (room) {
+                room = room.filter(user => user.id !== socket.id);
+                users[roomID] = room;
+            }
+
+            // Send that someone disconnected
+            const usersInThisRoom = users[roomID].filter(user => user.id !== socket.id);
+            usersInThisRoom.forEach(user => {
+                io.to(user.id).emit('user-left', socket.id);
+            });
+        })
 
         // Disconnect
         socket.on('disconnect', () => {

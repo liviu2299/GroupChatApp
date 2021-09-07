@@ -5,6 +5,7 @@
     color: white;
     display: inline-block;
     max-width: 80%;
+    border: 1px solid black;
   }
 
   .botMessageBox {
@@ -14,6 +15,7 @@
     color: white;
     display: inline-block;
     max-width: 80%;
+    border: 1px solid black;
   }
 
   .botMessageText {

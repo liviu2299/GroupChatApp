@@ -17,6 +17,7 @@ const ContextProvider = ({ children }) => {
 
     const [users, setUsers] = useState([]);
     const [messages, setMessages] = useState([]);
+    const [numberOfUsers, setNumberOfUsers] = useState(0);
 
     const { myName, color } = useContext(UserContext)
 
@@ -104,7 +105,7 @@ const ContextProvider = ({ children }) => {
                         peer
                     })
                 })
-
+                
                 socket.emit('get user info', {myId: socket.id, id: payload.callerID});
             })
 
@@ -123,9 +124,11 @@ const ContextProvider = ({ children }) => {
                     return prevUsers.filter(user => user.id !== id);
                 })
 
-                setMessages((prevMessages) => {
-                    return prevMessages.concat({id: "bot", user: 'bot', text: `${user.name} left the room`});
-                });
+                if(user.name){
+                    setMessages((prevMessages) => {
+                        return prevMessages.concat({id: "bot", user: 'bot', text: `${user.name} left the room`});
+                    });
+                }
             })
 
             // Updating the position
@@ -232,6 +235,10 @@ const ContextProvider = ({ children }) => {
         return peer;
     }
 
+    useEffect(() => {
+        setNumberOfUsers(users.length);
+    }, [users])
+
     return (
         <SocketContext.Provider value={{
             users,
@@ -240,6 +247,7 @@ const ContextProvider = ({ children }) => {
             userVideo,
             messages,
             setMessages,
+            numberOfUsers
         }}>
             {children}
         </SocketContext.Provider>

@@ -3,6 +3,8 @@ import { useContext, useState, useMemo, useEffect } from 'react'
 import { SocketContext } from '../../context/SocketContext';
 import { UserContext } from '../../context/UserContext'
 
+import './Drag.css'
+
 export default function Circle(props) {
 
     const { proximity, usersAround, setUsersAround }  = useContext(UserContext);
@@ -30,9 +32,7 @@ export default function Circle(props) {
         width: `600px`,
         border: `2px dotted ${color}`,
         borderRadius: `50%`,
-        left: `${proximity.x - 235}px`,
-        top: `${proximity.y - 251}px`,
-        transition: 'transform 500ms',
+        transform: `translate3d(${proximity.x - 235}px, ${proximity.y - 251}px, 0)`,
         position: 'absolute'
     }), [proximity, color])
 
@@ -87,7 +87,7 @@ export default function Circle(props) {
 
     return (
         <div>
-            <div style={circle}></div>
+            <div className="drag" style={circle}></div>
         </div>
     )
 }
