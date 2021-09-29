@@ -14,6 +14,8 @@ const socketToRoom = {};        // Returns the room of a user
 
 const initialPosition = {};     // Returns the initial position of a user
 
+//sadas
+
 io.on('connection', socket => {
 
     socket.on('join room', ({roomID, userInfo}) => {
