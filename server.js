@@ -14,7 +14,6 @@ const socketToRoom = {};        // Returns the room of a user
 
 const initialPosition = {};     // Returns the initial position of a user
 
-//sadassdas
 
 io.on('connection', socket => {
 
